@@ -1,4 +1,5 @@
 import Banner from "../components/Banner";
+import Footer from "../components/Footer";
 import Sections from "../components/Sections";
 
 function HomePage() {
@@ -6,6 +7,7 @@ function HomePage() {
     <div>
       <Banner />
       <Sections />
+      <Footer />
     </div>
   );
 }
