@@ -3,6 +3,9 @@ package bootcamp.petclinic.service;
 import bootcamp.petclinic.dto.login.LoginRequestDTO;
 import bootcamp.petclinic.dto.login.LoginResponseDTO;
 import bootcamp.petclinic.dto.register.RegisterRequestDTO;
+import bootcamp.petclinic.dto.register.RegisterResponseDTO;
+import bootcamp.petclinic.enums.Roles;
+import bootcamp.petclinic.exceptions.UserAlreadyExistsException;
 import bootcamp.petclinic.exceptions.UserAlreadyLoggedInException;
 import bootcamp.petclinic.model.User;
 import bootcamp.petclinic.repository.UserRepository;
@@ -27,33 +30,25 @@ public class AuthService {
     private final JwtService jwtService;
     private final TokenService tokenService;
 
-    public String register(RegisterRequestDTO request) {
-
-        Optional<User> existingUser = userRepository.findUserByUsername(request.getUsername());
-        if (existingUser.isPresent()) {
-            throw new RuntimeException("Username already registered.");
+    public RegisterResponseDTO register(RegisterRequestDTO registerRequestDTO) throws UserAlreadyExistsException {
+        if (userRepository.existsUserByEmail(registerRequestDTO.getEmail())) {
+            throw new UserAlreadyExistsException("Email already exists!");
         }
-
-        Optional<User> existingEmail = userRepository.findUserByEmail(request.getEmail());
-        if (existingEmail.isPresent()) {
-            throw new RuntimeException("Email already in use.");
+        if (userRepository.existsUserByUsername(registerRequestDTO.getUsername())) {
+            throw new UserAlreadyExistsException("This username already exists!");
         }
-
         User user = User.builder()
                 .userId(UUID.randomUUID().toString())
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .username(registerRequestDTO.getUsername())
+                .email(registerRequestDTO.getEmail())
+                .firstname(registerRequestDTO.getFirstname())
+                .lastname(registerRequestDTO.getLastname())
+                .password(passwordEncoder.encode(registerRequestDTO.getPassword()))
+                .role(Roles.ROLE_USER)
                 .build();
-
         userRepository.save(user);
-
-        return "Registration successful";
+        return new RegisterResponseDTO(user.getUserId(), "User registered successfully!");
     }
-
 
 
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
