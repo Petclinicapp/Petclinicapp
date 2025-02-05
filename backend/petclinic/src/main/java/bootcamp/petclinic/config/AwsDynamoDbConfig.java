@@ -11,6 +11,7 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 @Configuration
 public class AwsDynamoDbConfig {
+
     @Value("${aws.accessKeyId}")
     private String accessKeyId;
 

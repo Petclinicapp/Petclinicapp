@@ -1,0 +1,152 @@
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+Content-Length: 46
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.3.2.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "username": "test",
+  "password": "test"
+}
+
+<> 2025-02-05T143403.200.json
+
+###
+
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+Content-Length: 46
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.3.2.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "username": "test",
+  "password": "test"
+}
+
+<> 2025-02-05T143313.200.json
+
+###
+
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+Content-Length: 175
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.3.2.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "userId": "",
+  "firstname": "test",
+  "lastname": "test",
+  "email": "test@email.com",
+  "username": "test",
+  "password": "test",
+  "role": "ROLE_USER",
+  "tokens": []
+}
+
+<> 2025-02-05T143245.201.json
+
+###
+
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+Content-Length: 175
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.3.2.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "userId": "",
+  "firstname": "test",
+  "lastname": "test",
+  "email": "test@email.com",
+  "username": "test",
+  "password": "test",
+  "role": "ROLE_USER",
+  "tokens": []
+}
+
+<> 2025-02-05T142504.201.json
+
+###
+
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+Content-Length: 46
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.3.2.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "username": "test",
+  "password": "test"
+}
+
+<> 2025-02-05T142114.200.json
+
+###
+
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+Content-Length: 175
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.3.2.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "userId": "",
+  "firstname": "test",
+  "lastname": "test",
+  "email": "test@email.com",
+  "username": "test",
+  "password": "test",
+  "role": "ROLE_USER",
+  "tokens": []
+}
+
+<> 2025-02-05T142052.201.json
+
+###
+
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+Content-Length: 46
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.3.2.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "username": "test",
+  "password": "test"
+}
+
+<> 2025-02-05T131244.500.json
+
+###
+
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+Content-Length: 175
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.3.2.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "userId": "",
+  "firstname": "test",
+  "lastname": "test",
+  "email": "test@email.com",
+  "username": "test",
+  "password": "test",
+  "role": "ROLE_USER",
+  "tokens": []
+}
+
+<> 2025-02-05T120720.200.txt
+
+###
+
