@@ -1,4 +1,4 @@
-package bootcamp.petclinic.repository;
+package bootcamp.petclinic.service;
 
 import bootcamp.petclinic.model.User;
 import org.springframework.stereotype.Repository;
@@ -7,14 +7,13 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public class UserRepository {
+public class UserService {
 
     private final DynamoDbTable<User> userTable;
 
-    public UserRepository(DynamoDbEnhancedClient enhancedClient) {
+    public UserService(DynamoDbEnhancedClient enhancedClient) {
         this.userTable = enhancedClient.table("Users", TableSchema.fromBean(User.class));
     }
 
@@ -22,7 +21,7 @@ public class UserRepository {
         userTable.putItem(user);
     }
 
-    public Optional<User> findUserByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return userTable.scan()
                 .items()
                 .stream()
@@ -30,30 +29,12 @@ public class UserRepository {
                 .findFirst();
     }
 
-    public Optional<User> findUserByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         return userTable.scan()
                 .items()
                 .stream()
                 .filter(user -> user.getEmail().equals(email))
                 .findFirst();
     }
-
-    public Optional<User> findUserById(UUID uuid) {
-        return Optional.ofNullable(userTable.getItem(r -> r.key(k -> k.partitionValue(uuid.toString()))));
-    }
-
-    public boolean existsUserByEmail(String email) {
-        return findUserByEmail(email).isPresent();
-    }
-
-    public boolean existsUserByUsername(String username) {
-        return findUserByUsername(username).isPresent();
-    }
-
-    public boolean existsByAccountNumber(String accountNumber) {
-        return userTable.scan()
-                .items()
-                .stream()
-                .anyMatch(user -> accountNumber.equals(user.getUsername()));
-    }
 }
+
