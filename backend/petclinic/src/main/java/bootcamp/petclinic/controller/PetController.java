@@ -1,7 +1,10 @@
 package bootcamp.petclinic.controller;
 
+import bootcamp.petclinic.dto.pet.PetRequestDTO;
+import bootcamp.petclinic.dto.pet.PetResponseDTO;
 import bootcamp.petclinic.model.Pet;
 import bootcamp.petclinic.service.PetService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,21 +21,21 @@ public class PetController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createPet(@RequestBody Pet pet) {
-        petService.createPet(pet);
-        return ResponseEntity.ok("Pet created successfully!");
-    }
-
-    @PutMapping("/{petId}")
-    public ResponseEntity<String> updatePet(@PathVariable String petId, @RequestBody Pet updatedPet) {
-        petService.updatePet(petId, updatedPet);
-        return ResponseEntity.ok("Pet updated successfully!");
+    public ResponseEntity<PetResponseDTO> createPet(@Valid @RequestBody PetRequestDTO petRequestDTO) {
+        PetResponseDTO response = petService.createPet(petRequestDTO);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{petId}")
-    public ResponseEntity<Pet> getPet(@PathVariable String petId) {
-        Optional<Pet> pet = petService.getPetById(petId);
+    public ResponseEntity<PetResponseDTO> getPet(@PathVariable String petId) {
+        Optional<PetResponseDTO> pet = petService.getPetById(petId);
         return pet.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{petId}")
+    public ResponseEntity<String> updatePet(@PathVariable String petId, @Valid @RequestBody PetRequestDTO updatedPet) {
+        petService.updatePet(petId, updatedPet);
+        return ResponseEntity.ok("Pet updated successfully!");
     }
 
     @DeleteMapping("/{petId}")
