@@ -3,7 +3,7 @@ import { homeInfo } from "../data";
 
 function Sections() {
   return (
-    <div className="flex flex-col lg:flex-row w-full mt-10">
+    <div className="flex flex-col lg:flex-row w-full my-10">
       {homeInfo.map((card) => (
         <Link
           key={card.id}
