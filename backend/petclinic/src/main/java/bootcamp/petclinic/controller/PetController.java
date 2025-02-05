@@ -20,7 +20,7 @@ public class PetController {
         this.petService = petService;
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<PetResponseDTO> createPet(@Valid @RequestBody PetRequestDTO petRequestDTO) {
         PetResponseDTO response = petService.createPet(petRequestDTO);
         return ResponseEntity.ok(response);
