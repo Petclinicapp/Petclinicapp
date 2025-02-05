@@ -3,9 +3,6 @@ package bootcamp.petclinic.service;
 import bootcamp.petclinic.dto.login.LoginRequestDTO;
 import bootcamp.petclinic.dto.login.LoginResponseDTO;
 import bootcamp.petclinic.dto.register.RegisterRequestDTO;
-import bootcamp.petclinic.dto.register.RegisterResponseDTO;
-import bootcamp.petclinic.enums.Roles;
-import bootcamp.petclinic.exceptions.UserAlreadyExistsException;
 import bootcamp.petclinic.exceptions.UserAlreadyLoggedInException;
 import bootcamp.petclinic.model.User;
 import bootcamp.petclinic.repository.UserRepository;
@@ -13,48 +10,56 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final Argon2PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final TokenService tokenService;
 
+    public String register(RegisterRequestDTO request) {
 
-    public RegisterResponseDTO register(RegisterRequestDTO registerRequestDTO) throws UserAlreadyExistsException {
-        if (userRepository.existsUserByEmail(registerRequestDTO.getEmail())) {
-            throw new UserAlreadyExistsException("Email already exists!");
+        Optional<User> existingUser = userRepository.findUserByUsername(request.getUsername());
+        if (existingUser.isPresent()) {
+            throw new RuntimeException("Username already registered.");
         }
-        if (userRepository.existsUserByUsername(registerRequestDTO.getUsername())) {
-            throw new UserAlreadyExistsException("This username already exists!");
+
+        Optional<User> existingEmail = userRepository.findUserByEmail(request.getEmail());
+        if (existingEmail.isPresent()) {
+            throw new RuntimeException("Email already in use.");
         }
 
         User user = User.builder()
-                .username(registerRequestDTO.getUsername())
-                .email(registerRequestDTO.getEmail())
-                .firstname(registerRequestDTO.getFirstname())
-                .lastname(registerRequestDTO.getLastname())
-                .password(passwordEncoder.encode(registerRequestDTO.getPassword()))
-                .role(Roles.ROLE_USER)
+                .userId(UUID.randomUUID().toString())
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(request.getRole())
                 .build();
+
         userRepository.save(user);
 
-        return new RegisterResponseDTO(user.getId(), "User registered successfully!");
+        return "Registration successful";
     }
 
 
+
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getPassword()));
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getPassword())
+        );
 
         User user = userRepository.findUserByUsername(loginRequestDTO.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -77,8 +82,8 @@ public class AuthService {
     public Optional<User> getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (principal instanceof UserDetails) {
-            String username = ((UserDetails) principal).getUsername();
+        if (principal instanceof org.springframework.security.core.userdetails.UserDetails) {
+            String username = ((org.springframework.security.core.userdetails.UserDetails) principal).getUsername();
             return userRepository.findUserByUsername(username);
         }
         return Optional.empty();

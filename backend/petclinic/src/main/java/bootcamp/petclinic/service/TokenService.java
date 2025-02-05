@@ -8,8 +8,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,19 +22,25 @@ public class TokenService {
     private final TokenRepository tokenRepository;
     private final HttpServletRequest request;
 
+
     public void saveUserToken(User user, String jwtToken) {
-        var token = Token.builder()
-                .user(user)
+        String tokenId = UUID.randomUUID().toString();
+
+        Token token = Token.builder()
+                .tokenId(tokenId)
+                .userId(user.getUserId())
                 .token(jwtToken)
                 .tokenType(TokenType.BEARER)
                 .isExpired(false)
                 .isRevoked(false)
                 .build();
+
         tokenRepository.save(token);
     }
 
+
     public void revokeAllUserTokens(User user) {
-        var validUserTokens = tokenRepository.findAllValidTokensByUser(user.getId());
+        var validUserTokens = tokenRepository.findAllValidTokensByUser(user.getUserId());
         if (validUserTokens.isEmpty()) {
             return;
         }
@@ -43,14 +52,14 @@ public class TokenService {
     }
 
     public void deleteAllUserTokens(User user) {
-        var allUserTokens = tokenRepository.findAllByUserId(user.getId());
+        var allUserTokens = tokenRepository.findAllByUserId(user.getUserId());
         if (!allUserTokens.isEmpty()) {
             tokenRepository.deleteAll(allUserTokens);
         }
     }
 
     public List<Token> getAllValidUserTokens(User user) {
-        return tokenRepository.findAllValidTokensByUserId(user.getId());
+        return tokenRepository.findAllValidTokensByUserId(user.getUserId());
     }
 
     public String getCurrentToken() {

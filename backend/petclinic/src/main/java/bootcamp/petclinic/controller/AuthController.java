@@ -2,18 +2,21 @@ package bootcamp.petclinic.controller;
 
 import bootcamp.petclinic.dto.login.LoginRequestDTO;
 import bootcamp.petclinic.dto.login.LoginResponseDTO;
-import bootcamp.petclinic.dto.register.RegisterRequestDTO;
-import bootcamp.petclinic.dto.register.RegisterResponseDTO;
-import bootcamp.petclinic.exceptions.UserAlreadyExistsException;
 import bootcamp.petclinic.exceptions.UserAlreadyLoggedInException;
 import bootcamp.petclinic.exceptions.UserNotFoundException;
 import bootcamp.petclinic.exceptions.UsernameOrPasswordInvalidException;
+import bootcamp.petclinic.model.User;
 import bootcamp.petclinic.service.AuthService;
-import jakarta.validation.Valid;
+import bootcamp.petclinic.service.JwtService;
+import bootcamp.petclinic.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,17 +26,30 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private JwtService jwtService;
+
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponseDTO> registerUser(@Valid @RequestBody RegisterRequestDTO registerRequestDTO) {
-        try {
-            RegisterResponseDTO response = authService.register(registerRequestDTO);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
-        } catch (UserAlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new RegisterResponseDTO(e.getMessage()));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RegisterResponseDTO(e.getMessage()));
+    public String register(@RequestBody User user) {
+        Optional<User> existingUser = userRepository.findUserByUsername(user.getUsername());
+        if (existingUser.isPresent()) {
+            throw new RuntimeException("Username is already registered.");
         }
+
+        Optional<User> existingEmail = userRepository.findUserByEmail(user.getEmail());
+        if (existingEmail.isPresent()) {
+            throw new RuntimeException("Email is already in use.");
+        }
+
+        user.setUserId(UUID.randomUUID().toString());
+        userRepository.save(user);
+
+        return "Registration successful!";
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> loginUser(@RequestBody LoginRequestDTO loginRequestDTO) {

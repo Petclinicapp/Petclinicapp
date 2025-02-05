@@ -1,41 +1,63 @@
 package bootcamp.petclinic.model;
 
 import bootcamp.petclinic.enums.TokenType;
-import jakarta.persistence.*;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "tokens")
+@DynamoDbBean
 public class Token {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
-    private UUID id;
-
-    @Column(name = "token", unique = true, length = 1024)
+    private String tokenId;
     private String token;
-
-    @Column(name = "token_type")
-    @Enumerated(EnumType.STRING)
     private TokenType tokenType;
-
-    @Column(name = "is_expired")
     private boolean isExpired;
-
-    @Column(name = "is_revoked")
     private boolean isRevoked;
+    private String userId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @DynamoDbPartitionKey
+    @DynamoDbAttribute("tokenId")
+    public String getTokenId() {
+        return tokenId;
+    }
+
+    @DynamoDbAttribute("token")
+    public String getToken() {
+        return token;
+    }
+
+    @DynamoDbAttribute("tokenType")
+    public TokenType getTokenType() {
+        return tokenType;
+    }
+
+    @DynamoDbAttribute("isExpired")
+    public boolean isExpired() {
+        return isExpired;
+    }
+    public void setExpired(boolean expired) {
+        isExpired = expired;
+    }
+
+    @DynamoDbAttribute("isRevoked")
+    public boolean isRevoked() {
+        return isRevoked;
+    }
+    public void setRevoked(boolean revoked) {
+        isRevoked = revoked;
+    }
+
+    @DynamoDbAttribute("userId")
+    public String getUserId() {
+        return userId;
+    }
+
 }
