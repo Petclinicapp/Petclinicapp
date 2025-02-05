@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { IoPawOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import Logo from "./Logo";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -31,13 +32,7 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto flex justify-between items-center">
-        <a
-          href="/"
-          className="text-4xl font-bold text-white flex justify-center items-center gap-2"
-        >
-          <p>Pet Clinic</p>
-          <IoPawOutline />
-        </a>
+        <Logo bg="dark" />
         <ul className="flex space-x-6 text-lg">
           <li>
             <a

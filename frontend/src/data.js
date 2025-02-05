@@ -5,7 +5,7 @@ export const homeInfo = [
     label: "Meet Our Vets",
     info: "Meet the Veterinarians of Vet Clinic. We’re pleased to provide exceptional vet care for your pets.",
     color: "#6AA9C1",
-    img: "/images/image2.png",
+    img: "/images/image3.png",
   },
   {
     id: 2,
@@ -13,7 +13,7 @@ export const homeInfo = [
     label: "Why Choose Us",
     info: "Meet the Veterinarians of Vet Clinic. We’re pleased to provide exceptional vet care for your pets.",
     color: "#018AC1",
-    img: "/images/image3.png",
+    img: "/images/image2.png",
   },
   {
     id: 3,
