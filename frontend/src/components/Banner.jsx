@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
+import { useAuth } from "../context/UserContext";
 
 function Banner() {
+  const { isLoggedIn } = useAuth();
+
   return (
     <div
       className="relative w-full h-screen bg-cover bg-center"
@@ -20,12 +23,14 @@ function Banner() {
             furry friends. Whether it's a routine check-up or emergency care,
             we're here to help!
           </p>
-          <Link
-            to="/signin"
-            className="text-white uppercase font-bold justify-center flex w-32 bg-[#016891] text-lg mt-6 py-2 rounded transition-colors duration-300 hover:bg-[#2c6181]"
-          >
-            Sign In
-          </Link>
+          {!isLoggedIn && (
+            <Link
+              to="/signin"
+              className="text-white uppercase font-bold justify-center flex w-32 bg-[#016891] text-lg mt-6 py-2 rounded transition-colors duration-300 hover:bg-[#2c6181]"
+            >
+              Sign In
+            </Link>
+          )}
         </div>
       </div>
     </div>

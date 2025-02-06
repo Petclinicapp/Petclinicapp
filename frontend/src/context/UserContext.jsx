@@ -2,13 +2,14 @@ import { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
-import { postLogin, postRegister } from "../services/postService";
+import { logout, postLogin, postRegister } from "../services/postService";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const isLoggedIn = !!token;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,15 +64,22 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logoutHandler = () => {
-    // localStorage.removeItem("token");
-    // setToken(null);
-    // setUser(null);
-    // toast.success("Logged out successfully");
-    // navigate("/");
+    const token = localStorage.getItem("token");
+
+    logout(token);
+
+    setToken(null);
+    setUser(null);
+
+    toast.success("Logged out successfully");
+
+    navigate("/");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logoutHandler }}>
+    <AuthContext.Provider
+      value={{ user, login, register, logoutHandler, isLoggedIn }}
+    >
       {children}
     </AuthContext.Provider>
   );

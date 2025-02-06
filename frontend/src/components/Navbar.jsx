@@ -2,10 +2,23 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Logo from "./Logo";
+import { useAuth } from "../context/UserContext";
+import { jwtDecode } from "jwt-decode";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const { logoutHandler, isLoggedIn } = useAuth();
+  const [userInfo, setUserInfo] = useState(null);
+
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (token) {
+      const userData = jwtDecode(token);
+      setUserInfo(userData);
+    }
+  }, [token]);
 
   // Detect scroll event and update state
   const handleScroll = () => {
@@ -27,7 +40,7 @@ const Navbar = () => {
     >
       <div className="container mx-auto flex justify-between items-center">
         <Logo bg="dark" />
-        <ul className="hidden md:flex space-x-6 text-lg">
+        <ul className="hidden md:flex space-x-6 text-lg items-center">
           {["Home", "About Us", "Prices", "Contact"].map((item) => (
             <li key={item}>
               <a
@@ -38,17 +51,37 @@ const Navbar = () => {
               </a>
             </li>
           ))}
-          <li>
+          {isLoggedIn && (
             <Link
-              to="/signin"
-              className="text-white bg-[#016891] px-6 py-2 rounded transition-colors duration-300 hover:bg-[#2c6181] uppercase font-bold"
+              to="/profile"
+              className="text-white bg-[#016891] text-sm px-6 py-3 rounded transition-colors duration-300 hover:bg-[#2c6181] uppercase font-bold"
+              onClick={() => setIsOpen(false)}
             >
-              Sign In
+              Hello, {userInfo ? userInfo.username : "friend"}
             </Link>
+          )}
+
+          <li>
+            {isLoggedIn ? (
+              <button
+                onClick={logoutHandler}
+                className="text-white bg-[#016891] text-sm px-6 py-3 rounded transition-colors duration-300 hover:bg-[#2c6181] uppercase font-bold cursor-pointer"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                to="/signin"
+                className="text-white bg-[#016891] text-sm px-6 py-3 rounded transition-colors duration-300 hover:bg-[#2c6181] uppercase font-bold"
+                onClick={() => setIsOpen(false)}
+              >
+                Sign In
+              </Link>
+            )}
           </li>
         </ul>
         <button
-          className="md:hidden z-10 text-white text-2xl"
+          className="md:hidden z-10 text-white text-2xl cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <FaTimes /> : <FaBars />}
@@ -69,13 +102,22 @@ const Navbar = () => {
             {item}
           </a>
         ))}
-        <Link
-          to="/signin"
-          className="text-white bg-[#016891] px-6 py-3 rounded transition-colors duration-300 hover:bg-[#2c6181] uppercase font-bold mt-6"
-          onClick={() => setIsOpen(false)}
-        >
-          Sign In
-        </Link>
+        {isLoggedIn ? (
+          <button
+            onClick={logoutHandler}
+            className="text-white bg-[#016891] text-sm px-6 py-3 rounded transition-colors duration-300 hover:bg-[#2c6181] uppercase font-bold cursor-pointer"
+          >
+            Logout
+          </button>
+        ) : (
+          <Link
+            to="/signin"
+            className="text-white bg-[#016891] px-6 py-3 rounded transition-colors duration-300 hover:bg-[#2c6181] uppercase font-bold mt-6"
+            onClick={() => setIsOpen(false)}
+          >
+            Sign In
+          </Link>
+        )}
       </div>
     </nav>
   );
