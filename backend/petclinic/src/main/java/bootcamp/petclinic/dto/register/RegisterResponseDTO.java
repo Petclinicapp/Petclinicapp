@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +13,7 @@ import java.util.UUID;
 @Builder
 public class RegisterResponseDTO {
 
-    private UUID id;
+    private String id;
     private String username;
     private String email;
     private String token;
@@ -26,12 +24,12 @@ public class RegisterResponseDTO {
         this.message = message;
     }
 
-    public RegisterResponseDTO(UUID id, String message) {
+    public RegisterResponseDTO(String id, String message) {
         this.id = id;
         this.message = message;
     }
 
-    public RegisterResponseDTO(UUID id, String message, String accountNumber) {
+    public RegisterResponseDTO(String id, String message, String accountNumber) {
         this.id = id;
         this.message = message;
         this.accountNumber = accountNumber;
