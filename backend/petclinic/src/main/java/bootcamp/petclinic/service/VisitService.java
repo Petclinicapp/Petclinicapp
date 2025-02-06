@@ -1,7 +1,7 @@
 package bootcamp.petclinic.service;
 
-import bootcamp.petclinic.dto.VisitRequestDTO;
-import bootcamp.petclinic.dto.VisitResponseDTO;
+import bootcamp.petclinic.dto.visit.VisitRequestDTO;
+import bootcamp.petclinic.dto.visit.VisitResponseDTO;
 import bootcamp.petclinic.model.Visit;
 import bootcamp.petclinic.repository.VisitRepository;
 import org.springframework.stereotype.Service;
