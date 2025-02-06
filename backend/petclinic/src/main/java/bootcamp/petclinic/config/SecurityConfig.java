@@ -25,14 +25,7 @@ public class SecurityConfig {
     private final CorsConfig corsConfig;
     private final LogoutHandler logoutHandler;
 
-    private static final String[] WHITE_LIST_URL = {
-            "/api/v1/auth/register",
-            "/api/v1/auth/login",
-            "/api/v1/auth/logout",
-            "/error",
-            "/pets/add",
-            "/pets/{petId}"
-    };
+    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/register", "/api/v1/auth/login", "/api/v1/auth/logout", "/error"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {
@@ -40,7 +33,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/api/v1/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/pets/{petId}/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/pets/add/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/pets/{petId}/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/pets/{petId}/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
                         .requestMatchers(WHITE_LIST_URL).permitAll()
                         .anyRequest().authenticated()
                 )
