@@ -34,4 +34,29 @@ public class VisitService {
         return visitRepository.findById(visitId)
                 .map(visit -> new VisitResponseDTO(visit.getVisitId(), visit.getPetId(), visit.getVisitDateTime(), visit.getReason(), visit.getExaminationResults(), visit.getPerformedTests(), visit.getDiagnosis(), visit.getPrescribedTreatment()));
     }
+
+    public Optional<VisitResponseDTO> updateVisit(String visitId, VisitResponseDTO visitUpdateDTO) {
+        Optional<Visit> existingVisit = visitRepository.findById(visitId);
+
+        if (existingVisit.isPresent()) {
+            Visit visit = existingVisit.get();
+            visit.setExaminationResults(visitUpdateDTO.getExaminationResults());
+            visit.setPerformedTests(visitUpdateDTO.getPerformedTests());
+            visit.setDiagnosis(visitUpdateDTO.getDiagnosis());
+            visit.setPrescribedTreatment(visitUpdateDTO.getPrescribedTreatment());
+
+            visitRepository.save(visit);
+            return Optional.of(new VisitResponseDTO(
+                    visit.getVisitId(),
+                    visit.getPetId(),
+                    visit.getVisitDateTime(),
+                    visit.getReason(),
+                    visit.getExaminationResults(),
+                    visit.getPerformedTests(),
+                    visit.getDiagnosis(),
+                    visit.getPrescribedTreatment()
+            ));
+        }
+        return Optional.empty();
+    }
 }

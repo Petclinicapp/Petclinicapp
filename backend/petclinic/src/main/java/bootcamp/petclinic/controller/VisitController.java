@@ -16,7 +16,7 @@ public class VisitController {
         this.visitService = visitService;
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<VisitResponseDTO> createVisit(@RequestBody VisitRequestDTO visitRequestDTO) {
         VisitResponseDTO visitResponseDTO = visitService.createVisit(visitRequestDTO);
         return ResponseEntity.ok(visitResponseDTO);
@@ -25,6 +25,16 @@ public class VisitController {
     @GetMapping("/{visitId}")
     public ResponseEntity<VisitResponseDTO> getVisit(@PathVariable String visitId) {
         return visitService.getVisitById(visitId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{visitId}")
+    public ResponseEntity<VisitResponseDTO> updateVisit(
+            @PathVariable String visitId,
+            @RequestBody VisitResponseDTO visitUpdateDTO) {
+
+        return visitService.updateVisit(visitId, visitUpdateDTO)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

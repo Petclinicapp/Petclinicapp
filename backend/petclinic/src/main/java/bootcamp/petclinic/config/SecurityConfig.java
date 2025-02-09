@@ -31,7 +31,9 @@ public class SecurityConfig {
             "/api/v1/auth/logout",
             "/error",
             "/pets/add",
-            "/pets/{petId}"
+            "/pets/{petId}",
+            "visits/add",
+            "visits/{visitId}"
     };
 
     @Bean
