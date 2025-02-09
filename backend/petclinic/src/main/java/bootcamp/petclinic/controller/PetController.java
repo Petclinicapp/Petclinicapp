@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/pets")
+@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/api/v1/pets")
 public class PetController {
 
     private final PetService petService;
