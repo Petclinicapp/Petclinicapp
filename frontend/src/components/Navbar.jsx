@@ -8,17 +8,17 @@ import { jwtDecode } from "jwt-decode";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const { logoutHandler, isLoggedIn } = useAuth();
-  const [userInfo, setUserInfo] = useState(null);
+  const { logoutHandler, isLoggedIn, user } = useAuth();
+  // const [userInfo, setUserInfo] = useState(null);
 
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    if (token) {
-      const userData = jwtDecode(token);
-      setUserInfo(userData);
-    }
-  }, [token]);
+  // useEffect(() => {
+  //   if (token) {
+  //     const userData = jwtDecode(token);
+  //     setUserInfo(userData);
+  //   }
+  // }, [token]);
 
   // Detect scroll event and update state
   const handleScroll = () => {
@@ -51,16 +51,15 @@ const Navbar = () => {
               </a>
             </li>
           ))}
-          {isLoggedIn && (
+          {isLoggedIn && user && (
             <Link
-              to="/profile"
+              to={`/profile/${user.id}`}
               className="text-white bg-[#016891] text-sm px-6 py-3 rounded transition-colors duration-300 hover:bg-[#2c6181] uppercase font-bold"
               onClick={() => setIsOpen(false)}
             >
-              Hello, {userInfo ? userInfo.username : "friend"}
+              Hello, {user.username}
             </Link>
           )}
-
           <li>
             {isLoggedIn ? (
               <button

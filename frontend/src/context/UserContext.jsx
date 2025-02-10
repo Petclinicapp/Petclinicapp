@@ -33,6 +33,20 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
+  // Load user data from token
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const userData = jwtDecode(token);
+        setUser(userData);
+      } catch (error) {
+        console.error("Invalid token", error);
+        setUserInfo(null);
+      }
+    }
+  }, []);
+
   const login = async (userData) => {
     console.log("Logging in with:", userData);
     try {
