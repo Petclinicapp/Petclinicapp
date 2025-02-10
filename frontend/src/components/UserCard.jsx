@@ -3,6 +3,7 @@ import { FaEdit } from "react-icons/fa";
 import { BiUser } from "react-icons/bi";
 import { useState } from "react";
 import CreatePetForm from "./CreatePetForm";
+import { pets } from "../data";
 
 function UserCard() {
   const { user } = useAuth();
@@ -63,7 +64,11 @@ function UserCard() {
           Pets
         </h4>
         <ul className="list-disc ml-5">
-          <li className="marker:text-[#FB8500]">Tubbs</li>
+          {pets.map((pet) => (
+            <li className="marker:text-[#FB8500]" key={pet.id}>
+              {pet.petName}
+            </li>
+          ))}
         </ul>
       </div>
 

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 function Footer() {
   return (
-    <footer className="bg-[#1B8FBE]">
+    <footer className="bg-[#219EBC]">
       <div className="px-10  md:px-16 lg:px-32 max-w-[1900px]">
         <h1 className="py-10 text-2xl lg:text-4xl text-white">
           Have a Question? Need to book an appointment?
@@ -23,7 +23,7 @@ function Footer() {
               Whether you’re a new pet parent or want to schedule an
               appointment.
             </p>
-            <p className="mt-2 text-[#EAB308]">
+            <p className="mt-2 text-[#FFB703]">
               <span className="text-white mr-1">Contact Us:</span>
               vetclinic@vetclinic.com
             </p>
@@ -32,7 +32,7 @@ function Footer() {
             <h2 className="text-2xl font-bold mb-4">Our Services</h2>
             <ul className="list-disc">
               {footerServices.map((li) => (
-                <li key={li.id} className="marker:text-[#EAB308]">
+                <li key={li.id} className="marker:text-[#FFB703]">
                   {li.title}
                 </li>
               ))}
@@ -44,7 +44,7 @@ function Footer() {
               {footerLinks.map((li) => (
                 <li
                   key={li.id}
-                  className="marker:text-[#EAB308] hover:text-[#EAB308] transition-all duration-300 ease-in-out"
+                  className="marker:text-[#FFB703] hover:text-[#FFB703] transition-all duration-300 ease-in-out"
                 >
                   <Link to={li.link}>{li.title}</Link>
                 </li>
@@ -68,7 +68,7 @@ function Footer() {
               </div>
               <div className="flex justify-between pt-2">
                 <span>Sunday</span>
-                <span className="text-[#EAB308]">Emergency Only</span>
+                <span className="text-[#FFB703]">Emergency Only</span>
               </div>
             </div>
           </div>

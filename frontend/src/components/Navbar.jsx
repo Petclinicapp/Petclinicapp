@@ -3,22 +3,14 @@ import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Logo from "./Logo";
 import { useAuth } from "../context/UserContext";
-import { jwtDecode } from "jwt-decode";
+import { headerLinks } from "../data";
+import { IoIosLogOut } from "react-icons/io";
+import { BiUser } from "react-icons/bi";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { logoutHandler, isLoggedIn, user } = useAuth();
-  // const [userInfo, setUserInfo] = useState(null);
-
-  // const token = localStorage.getItem("token");
-
-  // useEffect(() => {
-  //   if (token) {
-  //     const userData = jwtDecode(token);
-  //     setUserInfo(userData);
-  //   }
-  // }, [token]);
 
   // Detect scroll event and update state
   const handleScroll = () => {
@@ -34,39 +26,41 @@ const Navbar = () => {
     <nav
       className={`fixed top-0 left-0 w-full z-20 transition-all duration-300 ease-in-out ${
         isScrolled
-          ? "bg-[#1B8FBE] bg-opacity-80 p-4 shadow-md"
+          ? "bg-[#219EBC] bg-opacity-80 p-4 shadow-md"
           : "bg-transparent p-6"
       }`}
     >
       <div className="container mx-auto flex justify-between items-center">
         <Logo bg="dark" />
-        <ul className="hidden md:flex space-x-6 text-lg items-center">
-          {["Home", "About Us", "Prices", "Contact"].map((item) => (
-            <li key={item}>
-              <a
-                href="#"
+        <ul className="hidden md:flex space-x-6 text-lg items-center justify-center">
+          {headerLinks.map((item) => (
+            <li key={item.id}>
+              <Link
+                to={item.link}
                 className="text-white hover:text-gray-300 border-b-2 border-transparent hover:border-white pb-1 transition-all duration-300"
               >
-                {item}
-              </a>
+                {item.title}
+              </Link>
             </li>
           ))}
+
           {isLoggedIn && user && (
             <Link
               to={`/profile/${user.id}`}
-              className="text-white bg-[#016891] text-sm px-6 py-3 rounded transition-colors duration-300 hover:bg-[#2c6181] uppercase font-bold"
+              className="flex gap-2 text-white text-sm px-6 py-3  transition-colors duration-300 border-b-2 border-transparent hover:border-white uppercase font-bold"
               onClick={() => setIsOpen(false)}
             >
-              Hello, {user.username}
+              <BiUser size={20} /> Hello, {user.username}
             </Link>
           )}
-          <li>
+          <li className="flex">
             {isLoggedIn ? (
               <button
                 onClick={logoutHandler}
-                className="text-white bg-[#016891] text-sm px-6 py-3 rounded transition-colors duration-300 hover:bg-[#2c6181] uppercase font-bold cursor-pointer"
+                className="text-white transition-colors duration-300 hover:text-[#FB8500] uppercase font-bold cursor-pointer"
+                title="Logout"
               >
-                Logout
+                <IoIosLogOut size={30} />
               </button>
             ) : (
               <Link
@@ -91,22 +85,33 @@ const Navbar = () => {
           isOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300`}
       >
-        {["Home", "About Us", "Prices", "Contact"].map((item) => (
-          <a
-            key={item}
-            href="#"
+        {isLoggedIn && user && (
+          <Link
+            to={`/profile/${user.id}`}
+            className="flex gap-2 text-white text-sm px-6 py-3  transition-colors duration-300 border-b-2 border-transparent hover:border-white uppercase font-bold"
+            onClick={() => setIsOpen(false)}
+          >
+            <BiUser size={20} /> Hello, {user.username}
+          </Link>
+        )}
+        {headerLinks.map((item) => (
+          <Link
+            key={item.id}
+            to={item.link}
             className="text-white text-2xl py-4 hover:text-gray-300 transition"
             onClick={() => setIsOpen(false)}
           >
-            {item}
-          </a>
+            {item.title}
+          </Link>
         ))}
+
         {isLoggedIn ? (
           <button
             onClick={logoutHandler}
-            className="text-white bg-[#016891] text-sm px-6 py-3 rounded transition-colors duration-300 hover:bg-[#2c6181] uppercase font-bold cursor-pointer"
+            className="text-white transition-colors duration-300 hover:text-[#FB8500] mt-6 uppercase font-bold cursor-pointer"
+            title="Logout"
           >
-            Logout
+            <IoIosLogOut size={40} />
           </button>
         ) : (
           <Link

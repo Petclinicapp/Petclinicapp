@@ -12,17 +12,56 @@ function CreatePetForm({ handleCancel, handleSave }) {
     weight: "",
   });
 
+  const [errors, setErrors] = useState({});
+
+  // Handle input changes with trimming
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setPetInfo((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : value.trim(), // Trim on input change
     }));
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
+  // Form validation function
+  const validateForm = () => {
+    let formErrors = {};
+    let isValid = true;
+
+    // Check if required fields are empty or invalid
+    if (!petInfo.petName || petInfo.petName.length < 2) {
+      formErrors.petName = "Pet Name must be at least 2 characters long";
+      isValid = false;
+    }
+    if (!petInfo.species || petInfo.species.length < 3) {
+      formErrors.species = "Species is required and at least 2 characters long";
+      isValid = false;
+    }
+    if (!petInfo.breed || petInfo.breed.length) {
+      formErrors.breed = "Breed is required and at least 2 characters long";
+      isValid = false;
+    }
+    if (!petInfo.age || petInfo.age <= 0) {
+      formErrors.age = "Age must be a positive number";
+      isValid = false;
+    }
+    if (!petInfo.weight || petInfo.weight <= 0) {
+      formErrors.weight = "Weight must be a positive number";
+      isValid = false;
+    }
+
+    setErrors(formErrors);
+    return isValid;
+  };
+
+  // Handle form submission
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    handleSave(petInfo); // Pass the petInfo state to handleSave
+
+    if (validateForm()) {
+      handleSave(petInfo); // Pass the petInfo state to handleSave
+    }
   };
 
   return (
@@ -45,6 +84,11 @@ function CreatePetForm({ handleCancel, handleSave }) {
             value={petInfo.petName}
             onChange={handleChange}
           />
+          {errors.petName && (
+            <p className="text-red-800 text-sm uppercase -mt-3">
+              {errors.petName}
+            </p>
+          )}
           <Input
             label="Species"
             type="text"
@@ -52,6 +96,11 @@ function CreatePetForm({ handleCancel, handleSave }) {
             value={petInfo.species}
             onChange={handleChange}
           />
+          {errors.species && (
+            <p className="text-red-800 text-sm uppercase -mt-3">
+              {errors.species}
+            </p>
+          )}
           <Input
             label="Breed"
             type="text"
@@ -59,6 +108,11 @@ function CreatePetForm({ handleCancel, handleSave }) {
             value={petInfo.breed}
             onChange={handleChange}
           />
+          {errors.breed && (
+            <p className="text-red-800 text-sm uppercase -mt-3">
+              {errors.breed}
+            </p>
+          )}
           <div className="mb-4 ">
             <label className="mb-1 text-gray-500">Gender</label>
             <div className="flex gap-4 bg-[#eeeee9] w-48  p-2 rounded-lg">
@@ -99,20 +153,33 @@ function CreatePetForm({ handleCancel, handleSave }) {
             </div>
           </div>
           <div className="flex gap-10">
-            <Input
-              label="Age"
-              type="number"
-              name="age"
-              value={petInfo.age}
-              onChange={handleChange}
-            />
-            <Input
-              label="Weight"
-              type="number"
-              name="weight"
-              value={petInfo.weight}
-              onChange={handleChange}
-            />
+            <div>
+              <Input
+                label="Age"
+                type="number"
+                name="age"
+                value={petInfo.age}
+                onChange={handleChange}
+              />
+              {errors.age && (
+                <p className="text-red-800 text-sm uppercase">{errors.age}</p>
+              )}
+            </div>
+            <div>
+              <Input
+                label="Weight"
+                type="number"
+                name="weight"
+                value={petInfo.weight}
+                onChange={handleChange}
+                error={errors.weight}
+              />
+              {errors.weight && (
+                <p className="text-red-800 text-sm uppercase">
+                  {errors.weight}
+                </p>
+              )}
+            </div>
           </div>
           <div className="flex justify-end gap-4">
             <button
