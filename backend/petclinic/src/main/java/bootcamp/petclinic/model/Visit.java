@@ -3,7 +3,8 @@ package bootcamp.petclinic.model;
 import lombok.Data;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @DynamoDbBean
@@ -11,8 +12,13 @@ public class Visit {
 
     private String visitId;
     private String petId;
-    private LocalDateTime visitDateTime;
+    private String userId;
+    private String doctorId;
+    private LocalDate visitDate;
+    private LocalTime visitTime;
     private String reason;
+    private VisitStatus status;
+
     private String examinationResults;
     private String performedTests;
     private String diagnosis;
