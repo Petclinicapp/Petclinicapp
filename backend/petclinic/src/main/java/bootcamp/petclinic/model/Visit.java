@@ -1,5 +1,6 @@
 package bootcamp.petclinic.model;
 
+import bootcamp.petclinic.enums.VisitStatus;
 import lombok.Data;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
