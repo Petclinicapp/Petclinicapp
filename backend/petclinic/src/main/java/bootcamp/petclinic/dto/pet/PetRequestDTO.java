@@ -1,11 +1,15 @@
 package bootcamp.petclinic.dto.pet;
 
-import lombok.Data;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PetRequestDTO {
     @NotBlank(message = "Pet name is required")
     private String petName;
@@ -21,4 +25,6 @@ public class PetRequestDTO {
 
     @Positive(message = "Weight must be positive")
     private double weight;
+
+    private String userId;
 }

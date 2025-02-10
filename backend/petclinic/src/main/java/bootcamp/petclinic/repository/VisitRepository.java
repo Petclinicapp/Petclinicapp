@@ -6,7 +6,9 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class VisitRepository {
@@ -23,5 +25,17 @@ public class VisitRepository {
 
     public Optional<Visit> findById(String visitId) {
         return Optional.ofNullable(visitTable.getItem(r -> r.key(k -> k.partitionValue(visitId))));
+    }
+
+    public void deleteVisitById(String visitId) {
+        visitTable.deleteItem(r -> r.key(k -> k.partitionValue(visitId)));
+    }
+
+    public List<Visit> findByUserId(String userId) {
+        return visitTable.scan()
+                .items()
+                .stream()
+                .filter(visit -> userId.equals(visit.getUserId()))
+                .collect(Collectors.toList());
     }
 }

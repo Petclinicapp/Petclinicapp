@@ -2,12 +2,12 @@ package bootcamp.petclinic.controller;
 
 import bootcamp.petclinic.dto.pet.PetRequestDTO;
 import bootcamp.petclinic.dto.pet.PetResponseDTO;
-import bootcamp.petclinic.model.Pet;
 import bootcamp.petclinic.service.PetService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -33,7 +33,13 @@ public class PetController {
         return pet.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{petId}")
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<PetResponseDTO>> getPetsByUserId(@PathVariable String userId) {
+        List<PetResponseDTO> pets = petService.getPetsByUserId(userId);
+        return pets.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(pets);
+    }
+
+    @PatchMapping("/{petId}")
     public ResponseEntity<String> updatePet(@PathVariable String petId, @Valid @RequestBody PetRequestDTO updatedPet) {
         petService.updatePet(petId, updatedPet);
         return ResponseEntity.ok("Pet updated successfully!");

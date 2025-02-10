@@ -1,9 +1,6 @@
 package bootcamp.petclinic.exceptions.handler;
 
-import bootcamp.petclinic.exceptions.UserAlreadyExistsException;
-import bootcamp.petclinic.exceptions.UserAlreadyLoggedInException;
-import bootcamp.petclinic.exceptions.UserNotFoundException;
-import bootcamp.petclinic.exceptions.UsernameOrPasswordInvalidException;
+import bootcamp.petclinic.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,5 +31,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDetails> exceptionUsernameOrPasswordInvalidHandler(UsernameOrPasswordInvalidException ex) {
         ErrorDetails errorDetails = new ErrorDetails(ex.getMessage());
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(PetNotFoundException.class)
+    public ResponseEntity<ErrorDetails> exceptionPetNotFoundHandler(PetNotFoundException ex) {
+        ErrorDetails errorDetails = new ErrorDetails(ex.getMessage());
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(VisitNotFoundException.class)
+    public ResponseEntity<ErrorDetails> exceptionVisitNotFoundHandler(VisitNotFoundException ex) {
+        ErrorDetails errorDetails = new ErrorDetails(ex.getMessage());
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 }

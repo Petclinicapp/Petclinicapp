@@ -33,10 +33,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/api/v1/pets/{petId}/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/pets/add/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/pets/{petId}/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/pets/{petId}/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/pets/{petId}").hasAnyRole("USER", "ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/pets/user/{userId}").hasAnyRole("USER", "ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/pets/add").hasAnyRole("USER", "ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/pets/{petId}").hasAnyRole("USER", "ADMIN", "DOCTOR")
+
+                        .requestMatchers("/api/v1/visits/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
+
                         .requestMatchers(WHITE_LIST_URL).permitAll()
                         .anyRequest().authenticated()
                 )
