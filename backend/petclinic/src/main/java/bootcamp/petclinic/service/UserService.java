@@ -2,13 +2,14 @@ package bootcamp.petclinic.service;
 
 import bootcamp.petclinic.model.User;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 
 import java.util.Optional;
 
-@Repository
+@Service
 public class UserService {
 
     private final DynamoDbTable<User> userTable;

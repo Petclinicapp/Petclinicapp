@@ -15,4 +15,5 @@ public class PetResponseDTO {
     private String gender;
     private int age;
     private double weight;
+    private String userId;
 }
