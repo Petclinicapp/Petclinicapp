@@ -7,7 +7,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -38,6 +37,8 @@ public class JwtService {
         claims.put("username", user.getUsername());
         claims.put("email", user.getEmail());
         claims.put("role", user.getRole().name());
+        claims.put("firstname", user.getFirstname());
+        claims.put("lastname", user.getLastname());
 
         UserDetails userDetails = new CustomUserDetails(user);
         return buildToken(claims, userDetails, jwtExpiration);

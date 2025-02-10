@@ -21,6 +21,7 @@ public class Pet {
     private String gender;
     private int age;
     private double weight;
+    private String userId;
 
     @DynamoDbPartitionKey
     public String getPetId() {

@@ -3,11 +3,15 @@ package bootcamp.petclinic.controller;
 import bootcamp.petclinic.dto.visit.VisitRequestDTO;
 import bootcamp.petclinic.dto.visit.VisitResponseDTO;
 import bootcamp.petclinic.service.VisitService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/visits")
+@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/api/v1/visits")
 public class VisitController {
 
     private final VisitService visitService;
@@ -17,25 +21,36 @@ public class VisitController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<VisitResponseDTO> createVisit(@RequestBody VisitRequestDTO visitRequestDTO) {
-        VisitResponseDTO visitResponseDTO = visitService.createVisit(visitRequestDTO);
-        return ResponseEntity.ok(visitResponseDTO);
+    public ResponseEntity<VisitRequestDTO> createVisit(@RequestBody VisitResponseDTO visitResponseDTO) {
+        VisitRequestDTO visitRequestDTO = visitService.createVisit(visitResponseDTO);
+        return ResponseEntity.ok(visitRequestDTO);
     }
 
     @GetMapping("/{visitId}")
-    public ResponseEntity<VisitResponseDTO> getVisit(@PathVariable String visitId) {
+    public ResponseEntity<VisitRequestDTO> getVisit(@PathVariable String visitId) {
         return visitService.getVisitById(visitId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{visitId}")
-    public ResponseEntity<VisitResponseDTO> updateVisit(
-            @PathVariable String visitId,
-            @RequestBody VisitResponseDTO visitUpdateDTO) {
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<VisitRequestDTO>> getVisitsByUserId(@PathVariable String userId) {
+        List<VisitRequestDTO> visits = visitService.getVisitsByUserId(userId);
+        return visits.isEmpty()
+                ? ResponseEntity.notFound().build()
+                : ResponseEntity.ok(visits);
+    }
 
-        return visitService.updateVisit(visitId, visitUpdateDTO)
-                .map(ResponseEntity::ok)
+    @PatchMapping("/{visitId}")
+    public ResponseEntity<String> updateVisit(@PathVariable String visitId, @Valid @RequestBody VisitRequestDTO visitRequestDTO) {
+        return visitService.updateVisit(visitId, visitRequestDTO)
+                .map(visit -> ResponseEntity.ok("Visit updated successfully!"))
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{visitId}")
+    public ResponseEntity<String> deleteVisit(@PathVariable String visitId) {
+        visitService.deleteVisit(visitId);
+        return ResponseEntity.ok("Visit deleted successfully!");
     }
 }
