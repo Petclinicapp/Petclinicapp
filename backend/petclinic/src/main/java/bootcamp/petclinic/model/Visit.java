@@ -15,10 +15,6 @@ public class Visit {
     private String userId;
     private LocalDateTime visitDateTime;
     private String reason;
-    private String examinationResults;
-    private String performedTests;
-    private String diagnosis;
-    private String prescribedTreatment;
 
     @DynamoDbPartitionKey
     public String getVisitId() {
