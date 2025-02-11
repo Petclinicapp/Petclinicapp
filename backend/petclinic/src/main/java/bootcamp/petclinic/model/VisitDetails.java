@@ -9,6 +9,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 public class VisitDetails {
 
     private String visitDetailsId;
+    private String visitId;
     private String examinationResults;
     private String performedTests;
     private String diagnosis;
