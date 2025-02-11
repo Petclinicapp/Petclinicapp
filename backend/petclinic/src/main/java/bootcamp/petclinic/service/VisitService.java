@@ -36,7 +36,7 @@ public class VisitService {
         visit.setUserId(userId);
         visit.setVisitDateTime(visitRequestDTO.getVisitDateTime());
         visit.setReason(visitRequestDTO.getReason());
-        visit.setStatus(VisitStatus.PENDING); // Priskiriamas numatytasis statusas
+        visit.setStatus(VisitStatus.PENDING);
 
         VisitDetails visitDetails = createVisitDetails(visit.getVisitId());
         visit.setVisitDetailsId(visitDetails.getVisitDetailsId());
@@ -54,7 +54,7 @@ public class VisitService {
         );
     }
 
-    private VisitDetails createVisitDetails(String visitId) {
+    public VisitDetails createVisitDetails(String visitId) {
         VisitDetails visitDetails = new VisitDetails();
         visitDetails.setVisitDetailsId(UUID.randomUUID().toString());
         visitDetails.setVisitId(visitId);
@@ -122,8 +122,8 @@ public class VisitService {
         }
     }
 
-    public Optional<VisitResponseDTO> updateVisitDetails(VisitDetailsUpdateDTO visitDetailsUpdateDTO) {
-        Visit visit = visitRepository.findById(visitDetailsUpdateDTO.getVisitId())
+    public Optional<VisitResponseDTO> updateVisitDetails(String visitId, VisitDetailsUpdateDTO visitDetailsUpdateDTO) {
+        Visit visit = visitRepository.findById(visitId)
                 .orElseThrow(() -> new VisitNotFoundException("Visit not found"));
 
         VisitDetails visitDetails = visitDetailsRepository.findById(visit.getVisitDetailsId())
@@ -146,6 +146,7 @@ public class VisitService {
                 visit.getVisitDetailsId()
         ));
     }
+
 
     public void deleteVisit(String visitId) {
         visitRepository.findById(visitId)
