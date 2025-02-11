@@ -26,7 +26,7 @@ function Banner() {
           {!isLoggedIn && (
             <Link
               to="/signin"
-              className="text-white uppercase font-bold justify-center flex w-32 bg-[#016891] text-lg mt-6 py-2 rounded transition-colors duration-300 hover:bg-[#2c6181]"
+              className="flex mt-6 w-28 justify-center text-white bg-transparent border-2 border-white hover:bg-white text-sm px-6 py-3 rounded transition-colors duration-300 hover:text-[#023047] uppercase font-bold"
             >
               Sign In
             </Link>
