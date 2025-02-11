@@ -1,14 +1,10 @@
-// 📌 VisitService.java
 package bootcamp.petclinic.service;
 
 import bootcamp.petclinic.dto.visit.VisitRequestDTO;
 import bootcamp.petclinic.dto.visit.VisitResponseDTO;
-import bootcamp.petclinic.dto.visit.VisitDetailsUpdateDTO;
 import bootcamp.petclinic.exceptions.VisitNotFoundException;
 import bootcamp.petclinic.model.Visit;
-import bootcamp.petclinic.model.VisitDetails;
 import bootcamp.petclinic.repository.VisitRepository;
-import bootcamp.petclinic.repository.VisitDetailsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +18,10 @@ import java.util.stream.Collectors;
 public class VisitService {
 
     private final VisitRepository visitRepository;
-    private final VisitDetailsRepository visitDetailsRepository;
     private final AuthService authService;
 
-    public VisitRequestDTO createVisit(VisitRequestDTO visitRequestDTO) {
+
+    public VisitResponseDTO createVisit(VisitRequestDTO visitRequestDTO) {
         String userId = authService.getCurrentUser()
                 .orElseThrow(() -> new RuntimeException("User not authenticated"))
                 .getUserId();
@@ -37,29 +33,20 @@ public class VisitService {
         visit.setVisitDateTime(visitRequestDTO.getVisitDateTime());
         visit.setReason(visitRequestDTO.getReason());
 
-        VisitDetails visitDetails = new VisitDetails();
-        visitDetails.setVisitDetailsId(UUID.randomUUID().toString());
-        visitDetailsRepository.save(visitDetails);
-        visit.setVisitDetailsId(visitDetails.getVisitDetailsId());
-
         visitRepository.save(visit);
 
-        return new VisitRequestDTO(visit.getVisitId(), visit.getPetId(), visit.getUserId(), visit.getVisitDateTime(), visit.getReason());
+        return new VisitResponseDTO(visit.getVisitId(), visit.getPetId(), visit.getUserId(), visit.getVisitDateTime(), visit.getReason());
     }
 
     public Optional<VisitResponseDTO> getVisitById(String visitId) {
         return visitRepository.findById(visitId)
-                .map(visit -> {
-                    VisitDetails visitDetails = visitDetailsRepository.findById(visit.getVisitDetailsId())
-                            .orElse(null);
-                    return new VisitResponseDTO(visit.getVisitId(), visit.getPetId(), visit.getUserId(), visit.getVisitDateTime(), visit.getReason(), visitDetails);
-                });
+                .map(visit -> new VisitResponseDTO(visit.getVisitId(), visit.getPetId(), visit.getUserId(), visit.getVisitDateTime(), visit.getReason()));
     }
 
-    public List<VisitRequestDTO> getVisitsByUserId(String userId) {
+    public List<VisitResponseDTO> getVisitsByUserId(String userId) {
         return visitRepository.findByUserId(userId)
                 .stream()
-                .map(visit -> new VisitRequestDTO(
+                .map(visit -> new VisitResponseDTO(
                         visit.getVisitId(),
                         visit.getPetId(),
                         visit.getUserId(),
@@ -69,7 +56,7 @@ public class VisitService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<VisitRequestDTO> updateVisit(String visitId, VisitRequestDTO visitRequestDTO) {
+    public VisitResponseDTO updateVisit(String visitId, VisitRequestDTO visitRequestDTO) {
         Visit existingVisit = visitRepository.findById(visitId)
                 .orElseThrow(() -> new VisitNotFoundException("Visit not found"));
 
@@ -79,46 +66,31 @@ public class VisitService {
 
         existingVisit.setUserId(userId);
 
-        if (visitRequestDTO.getVisitDateTime() != null) {
+        boolean isUpdated = false;
+
+        if (visitRequestDTO.getVisitDateTime() != null && !visitRequestDTO.getVisitDateTime().equals(existingVisit.getVisitDateTime())) {
             existingVisit.setVisitDateTime(visitRequestDTO.getVisitDateTime());
+            isUpdated = true;
         }
-        if (visitRequestDTO.getReason() != null) {
+
+        if (visitRequestDTO.getReason() != null && !visitRequestDTO.getReason().equals(existingVisit.getReason())) {
             existingVisit.setReason(visitRequestDTO.getReason());
+            isUpdated = true;
         }
 
-        visitRepository.save(existingVisit);
-
-        return Optional.of(new VisitRequestDTO(
-                existingVisit.getVisitId(),
-                existingVisit.getPetId(),
-                existingVisit.getUserId(),
-                existingVisit.getVisitDateTime(),
-                existingVisit.getReason()
-        ));
-    }
-
-    public Optional<VisitResponseDTO> updateVisitDetails(VisitDetailsUpdateDTO visitDetailsUpdateDTO) {
-        Visit visit = visitRepository.findById(visitDetailsUpdateDTO.getVisitId())
-                .orElseThrow(() -> new VisitNotFoundException("Visit not found"));
-
-        VisitDetails visitDetails = visitDetailsRepository.findById(visit.getVisitDetailsId())
-                .orElseThrow(() -> new VisitNotFoundException("Visit details not found"));
-
-        visitDetails.setExaminationResults(visitDetailsUpdateDTO.getExaminationResults());
-        visitDetails.setPerformedTests(visitDetailsUpdateDTO.getPerformedTests());
-        visitDetails.setDiagnosis(visitDetailsUpdateDTO.getDiagnosis());
-        visitDetails.setPrescribedTreatment(visitDetailsUpdateDTO.getPrescribedTreatment());
-
-        visitDetailsRepository.save(visitDetails);
-
-        return Optional.of(new VisitResponseDTO(
-                visit.getVisitId(),
-                visit.getPetId(),
-                visit.getUserId(),
-                visit.getVisitDateTime(),
-                visit.getReason(),
-                visitDetails
-        ));
+        if (isUpdated) {
+            visitRepository.save(existingVisit);
+            return new VisitResponseDTO(
+                    existingVisit.getVisitId(),
+                    existingVisit.getPetId(),
+                    existingVisit.getUserId(),
+                    existingVisit.getVisitDateTime(),
+                    existingVisit.getReason(),
+                    "Visit updated successfully"
+            );
+        } else {
+            return new VisitResponseDTO("No changes were detected");
+        }
     }
 
     public void deleteVisit(String visitId) {
