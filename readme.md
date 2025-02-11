@@ -1,4 +1,4 @@
-# Pet Clinic Appoitment App
+# Pet Clinic Appointment App
 
 ### Overview
 
@@ -11,10 +11,10 @@ A veterinary clinic management system built with Spring Boot and React that stre
   - JWT-based authentication
   - Role-based access control (Admin, Doctor, User)
 
-- Pet Managementc
+- Pet Management
 
   - Add and update pet information
-  - View pet's visit History
+  - View pet's visit history
   - Track pet medical history
 
 - Visit Management
@@ -63,31 +63,31 @@ A veterinary clinic management system built with Spring Boot and React that stre
 
 - POST `/api/v1/visits/add` - Schedule new visit
 - GET `/api/v1/visits/{visitId}` - Get visit details
-- GET `/api/v1/visits/user/{visitId}` - Get user visit details
+- GET `/api/v1/visits/user/{userId}` - Get user visit details
 - PATCH `/api/v1/visits/{visitId}` - Update visit information
 - DELETE `/api/v1/visits/{visitId}` - Cancel visit
 
 ## Getting Started
 
-- Clone the repository
-- Configure AWS credentials
-
-  - Create `.aws` folder at your home directory
-  - Inside `.aws` folder create `credentials` (without .txt) file and put _your access key id_ and _secret access key_
-
-  ```bash
-  [default]
-  aws_access_key_id = your-access-key-id
-  aws_secret_access_key = your-secret-access-key
-  ```
-
-- Set up DynamoDB tables
-- Open and start back-end application
-  - `mvn clean install`
-  - `mvn spring-boot:run`
-- Navigate to front-end `cd frontend`
-- Install all dependencies by typing `npm i` in the terminal
-- To start the frontend type `npm run dev`
+1. Clone the repository
+2. Configure AWS credentials:
+   - Create `.aws` folder at your home directory
+   - Inside `.aws` folder create `credentials` file (without .txt)
+   - Add your credentials:
+     ```bash
+     [default]
+     aws_access_key_id = your-access-key-id
+     aws_secret_access_key = your-secret-access-key
+     ```
+3. Set up DynamoDB tables
+4. Backend setup:
+   - Open and configure database credentials at `application.properties`
+   - Run `mvn clean install`
+   - Run `mvn spring-boot:run`
+5. Frontend setup:
+   - Navigate to frontend: `cd frontend`
+   - Install dependencies: `npm i`
+   - Start the application: `npm run dev`
 
 ## Team
 
