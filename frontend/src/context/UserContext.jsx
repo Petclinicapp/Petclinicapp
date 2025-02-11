@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import { logout, postLogin, postRegister } from "../services/postService";
+import { getPetsByUserId } from "../services/getService";
+import { deletePet } from "../services/deleteService";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [pets, setPets] = useState([]);
   const isLoggedIn = !!token;
   const navigate = useNavigate();
 
@@ -33,33 +36,46 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
-  // Load user data from token
+  // Fetch user data when the token changes
   useEffect(() => {
-    const token = localStorage.getItem("token");
     if (token) {
       try {
         const userData = jwtDecode(token);
-        setUser(userData);
+        setUser(userData); // Set the user based on the decoded token
       } catch (error) {
         console.error("Invalid token", error);
-        setUserInfo(null);
+        setUser(null);
       }
+    } else {
+      setUser(null); // Clear user if no token
     }
-  }, []);
+  }, [token]); // Runs when token changes
+
+  useEffect(() => {
+    if (!user || !user.id) return; // Ensure user exists before fetching
+
+    const fetchPets = async () => {
+      try {
+        const data = await getPetsByUserId(user.id);
+        setPets(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchPets();
+  }, [user]); // Fetch pets whenever user changes
 
   const login = async (userData) => {
     console.log("Logging in with:", userData);
     try {
       const { token } = await postLogin(userData);
       localStorage.setItem("token", token);
-      setToken(token);
-      setUser(jwtDecode(token));
+      setToken(token); // Set token in state
+
       toast.success("Logged in successfully");
-
-      console.log("User data:", userData);
-      console.log("Token:", token);
-
       navigate("/");
+      // window.location.replace("/");
     } catch (error) {
       console.error("Login error:", error.message);
       toast.error(error.message);
@@ -90,9 +106,39 @@ export const AuthProvider = ({ children }) => {
     navigate("/");
   };
 
+  const fetchPets = async () => {
+    if (!user || !user.id) return;
+
+    try {
+      const data = await getPetsByUserId(user.id);
+      setPets(data);
+    } catch (err) {
+      console.error("Error fetching pets:", err.message);
+    }
+  };
+
+  const handleDeletePet = async (petId) => {
+    try {
+      await deletePet(petId); // Call the API to delete the pet
+      setPets((prevPets) => prevPets.filter((pet) => pet.petId !== petId)); // Remove from the local pets list
+      toast.success("Pet deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete pet");
+    }
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, login, register, logoutHandler, isLoggedIn }}
+      value={{
+        user,
+        login,
+        register,
+        logoutHandler,
+        isLoggedIn,
+        pets,
+        fetchPets,
+        handleDeletePet,
+      }}
     >
       {children}
     </AuthContext.Provider>

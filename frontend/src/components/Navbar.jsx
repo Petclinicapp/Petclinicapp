@@ -47,7 +47,7 @@ const Navbar = () => {
           {isLoggedIn && user && (
             <Link
               to={`/profile/${user.id}`}
-              className="flex gap-2 text-white text-sm px-6 py-3  transition-colors duration-300 border-b-2 border-transparent hover:border-white uppercase font-bold"
+              className="flex gap-2 text-white text-sm px-6 py-3 transition-colors duration-300 border-b-2 border-transparent hover:border-white uppercase font-bold"
               onClick={() => setIsOpen(false)}
             >
               <BiUser size={20} /> Hello, {user.username}
@@ -65,7 +65,7 @@ const Navbar = () => {
             ) : (
               <Link
                 to="/signin"
-                className="text-white bg-[#016891] text-sm px-6 py-3 rounded transition-colors duration-300 hover:bg-[#2c6181] uppercase font-bold"
+                className="text-white bg-transparent border-2 border-white hover:bg-white text-sm px-6 py-3 rounded transition-colors duration-300 hover:text-[#023047] uppercase font-bold"
                 onClick={() => setIsOpen(false)}
               >
                 Sign In
