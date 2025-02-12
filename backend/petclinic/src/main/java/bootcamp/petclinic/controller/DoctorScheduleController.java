@@ -1,6 +1,7 @@
 package bootcamp.petclinic.controller;
 
 import bootcamp.petclinic.dto.doctorSchedule.DoctorScheduleRequest;
+import bootcamp.petclinic.dto.doctorSchedule.RemoveSlotRequest;
 import bootcamp.petclinic.model.DoctorSchedule;
 import bootcamp.petclinic.service.DoctorScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -41,10 +42,9 @@ public class DoctorScheduleController {
     @DeleteMapping("/{doctorId}/remove")
     public ResponseEntity<String> removeSlot(
             @PathVariable String doctorId,
-            @RequestParam String date,
-            @RequestParam String time) {
+            @RequestBody RemoveSlotRequest request) {
 
-        boolean removed = doctorScheduleService.removeSlot(doctorId, LocalDate.parse(date), LocalTime.parse(time));
+        boolean removed = doctorScheduleService.removeSlot(doctorId, request.getDate(), request.getTime());
 
         if (removed) {
             return ResponseEntity.ok("Slot removed successfully");
