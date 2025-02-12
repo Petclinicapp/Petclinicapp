@@ -44,4 +44,10 @@ public class GlobalExceptionHandler {
         ErrorDetails errorDetails = new ErrorDetails(ex.getMessage());
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<ErrorDetails> exceptionUnauthorizedAccessHandler(UnauthorizedAccessException ex) {
+        ErrorDetails errorDetails = new ErrorDetails(ex.getMessage());
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
 }

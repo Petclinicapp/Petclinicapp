@@ -1,8 +1,7 @@
 package bootcamp.petclinic.controller;
 
-import bootcamp.petclinic.dto.visit.VisitDetailsUpdateDTO;
-import bootcamp.petclinic.dto.visit.VisitRequestDTO;
-import bootcamp.petclinic.dto.visit.VisitResponseDTO;
+import bootcamp.petclinic.dto.visit.*;
+import bootcamp.petclinic.exceptions.UnauthorizedAccessException;
 import bootcamp.petclinic.exceptions.VisitNotFoundException;
 import bootcamp.petclinic.service.VisitService;
 import jakarta.validation.Valid;
@@ -91,6 +90,27 @@ public class VisitController {
         }
     }
 
+    @PatchMapping("/{visitId}/status")
+    public ResponseEntity<VisitUpdateResponseDTO> updateVisitStatus(
+            @PathVariable String visitId,
+            @RequestBody VisitUpdateRequestDTO status
+    ) {
+        try {
+            VisitUpdateResponseDTO response = visitService.updateVisitStatus(visitId, status);
+            return ResponseEntity.ok(response);
 
+        } catch (UnauthorizedAccessException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new VisitUpdateResponseDTO(e.getMessage()));
+
+        } catch (VisitNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new VisitUpdateResponseDTO(e.getMessage()));
+
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new VisitUpdateResponseDTO(e.getMessage()));
+        }
+    }
 
 }
