@@ -1,5 +1,6 @@
 package bootcamp.petclinic.controller;
 
+import bootcamp.petclinic.dto.doctorSchedule.DoctorScheduleRequest;
 import bootcamp.petclinic.model.DoctorSchedule;
 import bootcamp.petclinic.service.DoctorScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -18,21 +19,14 @@ public class DoctorScheduleController {
     private final DoctorScheduleService doctorScheduleService;
 
     @PostMapping("/create")
-    public ResponseEntity<DoctorSchedule> createSchedule(
-            @RequestParam String doctorId,
-            @RequestParam String startDate,
-            @RequestParam String endDate,
-            @RequestParam String startTime,
-            @RequestParam String endTime,
-            @RequestParam int intervalMinutes) {
-
+    public ResponseEntity<DoctorSchedule> createSchedule(@RequestBody DoctorScheduleRequest request) {
         DoctorSchedule schedule = doctorScheduleService.createSchedule(
-                doctorId,
-                LocalDate.parse(startDate),
-                LocalDate.parse(endDate),
-                LocalTime.parse(startTime),
-                LocalTime.parse(endTime),
-                intervalMinutes
+                request.getDoctorId(),
+                request.getStartDate(),
+                request.getEndDate(),
+                request.getStartTime(),
+                request.getEndTime(),
+                request.getIntervalMinutes()
         );
 
         return ResponseEntity.ok(schedule);
