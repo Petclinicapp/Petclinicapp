@@ -1,9 +1,8 @@
 package bootcamp.petclinic.service;
 
-import bootcamp.petclinic.dto.visit.VisitRequestDTO;
-import bootcamp.petclinic.dto.visit.VisitResponseDTO;
-import bootcamp.petclinic.dto.visit.VisitDetailsUpdateDTO;
+import bootcamp.petclinic.dto.visit.*;
 import bootcamp.petclinic.enums.VisitStatus;
+import bootcamp.petclinic.exceptions.UnauthorizedAccessException;
 import bootcamp.petclinic.exceptions.VisitNotFoundException;
 import bootcamp.petclinic.model.Visit;
 import bootcamp.petclinic.model.VisitDetails;
@@ -145,6 +144,40 @@ public class VisitService {
                 visit.getStatus(),
                 visit.getVisitDetailsId()
         ));
+    }
+
+    public VisitUpdateResponseDTO updateVisitStatus(String visitId, VisitUpdateRequestDTO visitUpdateRequestDTO) {
+
+        String userRole = String.valueOf(authService.getCurrentUser()
+                .orElseThrow(() -> new RuntimeException("User not authenticated"))
+                .getRole());
+
+        if (!userRole.equals("ROLE_DOCTOR")) {
+            throw new UnauthorizedAccessException("Only doctors can update the visit status");
+        }
+
+        Visit existingVisit = visitRepository.findById(visitId)
+                .orElseThrow(() -> new VisitNotFoundException("Visit not found"));
+
+        if (visitUpdateRequestDTO.getStatus() == null) {
+            throw new IllegalArgumentException("New status cannot be null");
+        }
+
+        if (!existingVisit.getStatus().equals(VisitStatus.PENDING)) {
+            throw new IllegalStateException("Only PENDING visits can be updated");
+        }
+
+        if (!(visitUpdateRequestDTO.getStatus().equals(VisitStatus.CONFIRMED) || visitUpdateRequestDTO.getStatus().equals(VisitStatus.CANCELLED))) {
+            throw new IllegalArgumentException("Visit can only be updated to ACCEPTED or CANCELLED status");
+        }
+
+        existingVisit.setStatus(visitUpdateRequestDTO.getStatus());
+        visitRepository.save(existingVisit);
+
+        return new VisitUpdateResponseDTO(
+                existingVisit.getStatus(),
+                "Status updated"
+        );
     }
 
 

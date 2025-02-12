@@ -17,7 +17,7 @@ public class Visit {
     private LocalDateTime visitDateTime;
     private String reason;
     private String visitDetailsId;
-    private VisitStatus status = VisitStatus.PENDING;
+    private VisitStatus status;
 
     @DynamoDbPartitionKey
     public String getVisitId() {
