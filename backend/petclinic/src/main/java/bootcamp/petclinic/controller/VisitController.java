@@ -1,5 +1,6 @@
 package bootcamp.petclinic.controller;
 
+import bootcamp.petclinic.dto.visit.VisitDetailsUpdateDTO;
 import bootcamp.petclinic.dto.visit.VisitRequestDTO;
 import bootcamp.petclinic.dto.visit.VisitResponseDTO;
 import bootcamp.petclinic.exceptions.VisitNotFoundException;
@@ -61,4 +62,35 @@ public class VisitController {
         visitService.deleteVisit(visitId);
         return ResponseEntity.ok("Visit deleted successfully!");
     }
+
+    @PostMapping("/{visitId}/details")
+    public ResponseEntity<String> createVisitDetails(@PathVariable String visitId) {
+        try {
+            visitService.createVisitDetails(visitId);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Visit details created successfully!");
+        } catch (VisitNotFoundException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch(
+        RuntimeException e)
+        {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());}
+    }
+
+    @PatchMapping("/{visitId}/updateDetails")
+    public ResponseEntity<VisitResponseDTO> updateVisitDetails(
+            @PathVariable String visitId,
+            @Valid @RequestBody VisitDetailsUpdateDTO visitDetailsUpdateDTO) {
+        try {
+            VisitResponseDTO response = visitService.updateVisitDetails(visitId, visitDetailsUpdateDTO)
+                    .orElseThrow(() -> new VisitNotFoundException("Visit details not found"));
+            return ResponseEntity.ok(response);
+        } catch (VisitNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new VisitResponseDTO(e.getMessage()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new VisitResponseDTO(e.getMessage()));
+        }
+    }
+
+
+
 }
