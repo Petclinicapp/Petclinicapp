@@ -15,7 +15,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class DoctorScheduleService {
-
     private final DoctorScheduleRepository doctorScheduleRepository;
 
     public DoctorSchedule createSchedule(String doctorId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int intervalMinutes) {
@@ -32,27 +31,31 @@ public class DoctorScheduleService {
         DoctorSchedule schedule = new DoctorSchedule();
         schedule.setDoctorId(doctorId);
         schedule.setAvailableSlots(slots);
-
         doctorScheduleRepository.save(schedule);
+
         return schedule;
     }
-
 
     public Optional<DoctorSchedule> getDoctorSchedule(String doctorId) {
         return doctorScheduleRepository.findById(doctorId);
     }
 
-
     public boolean removeSlot(String doctorId, LocalDate date, LocalTime time) {
-        Optional<DoctorSchedule> scheduleOpt = doctorScheduleRepository.findById(doctorId);
-        if (scheduleOpt.isEmpty()) return false;
+        Optional<DoctorSchedule> optionalSchedule = doctorScheduleRepository.findById(doctorId);
+        if (optionalSchedule.isPresent()) {
+            DoctorSchedule schedule = optionalSchedule.get();
+            List<Availability> updatedSlots = new ArrayList<>(schedule.getAvailableSlots());
+            boolean removed = updatedSlots.removeIf(slot ->
+                    slot.getAvailableDate().equals(date) && slot.getAvailableTime().equals(time)
+            );
 
-        DoctorSchedule schedule = scheduleOpt.get();
-        List<Availability> updatedSlots = new ArrayList<>(schedule.getAvailableSlots());
-        updatedSlots.removeIf(slot -> slot.getAvailableDate().equals(date) && slot.getAvailableTime().equals(time));
 
-        schedule.setAvailableSlots(updatedSlots);
-        doctorScheduleRepository.save(schedule);
-        return true;
+            if (removed) {
+                schedule.setAvailableSlots(updatedSlots);
+                doctorScheduleRepository.save(schedule);
+                return true;
+            }
+        }
+        return false;
     }
 }

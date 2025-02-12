@@ -6,26 +6,15 @@ import org.springframework.stereotype.Repository;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 import java.util.Optional;
 
 @Repository
-@RequiredArgsConstructor
 public class DoctorScheduleRepository {
-
-    private final DynamoDbClient dynamoDbClient;
-    private final DynamoDbEnhancedClient dynamoDbEnhancedClient;
-
     private final DynamoDbTable<DoctorSchedule> doctorScheduleTable;
 
-    public DoctorScheduleRepository(DynamoDbClient dynamoDbClient) {
-        this.dynamoDbClient = dynamoDbClient;
-        this.dynamoDbEnhancedClient = DynamoDbEnhancedClient.builder()
-                .dynamoDbClient(dynamoDbClient)
-                .build();
-
-        this.doctorScheduleTable = dynamoDbEnhancedClient.table("DoctorSchedule", TableSchema.fromBean(DoctorSchedule.class));
+    public DoctorScheduleRepository(DynamoDbEnhancedClient enhancedClient) {
+        this.doctorScheduleTable = enhancedClient.table("DoctorSchedule", TableSchema.fromBean(DoctorSchedule.class));
     }
 
     public void save(DoctorSchedule doctorSchedule) {
