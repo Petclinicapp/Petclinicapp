@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     fetchVisits();
-  }, [user, visits]);
+  }, [user]);
 
   const login = async (userData) => {
     try {
@@ -88,7 +88,8 @@ export const AuthProvider = ({ children }) => {
       setToken(token);
 
       toast.success("Logged in successfully");
-      navigate("/");
+      // navigate("/");
+      window.location.replace("/");
     } catch (error) {
       toast.error(error.message);
     }

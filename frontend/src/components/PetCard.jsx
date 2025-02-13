@@ -5,7 +5,6 @@ import { useState } from "react";
 import { updatePet } from "../services/putService";
 import PetForm from "./CreatePetForm";
 import { useAuth } from "../context/UserContext";
-import { toast } from "react-toastify";
 import DeletePetModal from "./DeletePetModal";
 
 function PetCard({ pet }) {

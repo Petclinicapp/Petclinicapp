@@ -64,7 +64,7 @@ function UserCard() {
           }
           className="cursor-pointer bg-[#FB8500] text-white font-bold px-6 py-2 rounded-lg shadow-lg hover:text-[#FB8500] hover:bg-white transition-all duration-300 ease-in-out"
         >
-          Appointments
+          Visits
         </Link>
       </div>
       <div className="bg-white rounded-b-lg md:rounded-none md:rounded-r-lg p-10 w-full md:w-2/3">

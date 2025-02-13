@@ -29,7 +29,11 @@ export const getVisitsByUserId = async (userId) => {
   }
 };
 
-export const getAllVisits = async () => {
+export const getAllVisits = async (userRole) => {
+  if (userRole !== "ROLE_DOCTOR") {
+    throw new Error("You do not have permission to view this data.");
+  }
+
   try {
     const resp = await axios.get(`${API_URL}/api/v1/visits/all`, {
       headers: {
@@ -38,7 +42,7 @@ export const getAllVisits = async () => {
     });
     return resp.data;
   } catch (error) {
-    throw new Error(`Error fetching user data: ${error.message}`);
+    throw new Error(`Error fetching visits: ${error.message}`);
   }
 };
 

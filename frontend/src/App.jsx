@@ -12,9 +12,8 @@ import DoctorsVisitPage from "./pages/DoctorsVisitPage";
 function App() {
   const { isLoggedIn, user } = useAuth();
 
-  if (!isLoggedIn || !user) return <p>Loading...</p>;
-
   const ProtectedRoute = ({ element, allowedRoles }) => {
+    if (!isLoggedIn || !user) return <p>Loading...</p>;
     if (!isLoggedIn) return <Navigate to="/signin" />;
     if (!allowedRoles.includes(user.role)) return <Navigate to="/" />; // Redirect if not authorized
 
