@@ -7,17 +7,24 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AvailabilityService {
 
-    public Optional<Availability> findAvailableSlot(String doctorId, LocalDate date, LocalTime time, List<DoctorSchedule> schedules) {
+    public List<Availability> getAvailableTimeSlots(String doctorId, List<DoctorSchedule> schedules) {
         return schedules.stream()
                 .filter(schedule -> schedule.getDoctorId().equals(doctorId))
                 .flatMap(schedule -> schedule.getAvailableSlots().stream())
-                .filter(slot -> slot.getAvailableDate().equals(date)
-                        && slot.getAvailableTime().equals(time)
-                        && !slot.isBooked())
+                .filter(slot -> !slot.isBooked())
+                .collect(Collectors.toList());
+    }
+
+    public Optional<Availability> findAndReserveTimeSlot(String doctorId, LocalDate date, LocalTime time, List<DoctorSchedule> schedules) {
+        return schedules.stream()
+                .filter(schedule -> schedule.getDoctorId().equals(doctorId))
+                .flatMap(schedule -> schedule.getAvailableSlots().stream())
+                .filter(slot -> slot.getAvailableDate().equals(date) && slot.getAvailableTime().equals(time) && !slot.isBooked())
                 .findFirst();
     }
 

@@ -36,6 +36,10 @@ public class DoctorScheduleService {
         return schedule;
     }
 
+    public void updateSchedule(DoctorSchedule schedule) {
+        doctorScheduleRepository.save(schedule);
+    }
+
     public Optional<DoctorSchedule> getDoctorSchedule(String doctorId) {
         return doctorScheduleRepository.findById(doctorId);
     }
@@ -48,7 +52,6 @@ public class DoctorScheduleService {
             boolean removed = updatedSlots.removeIf(slot ->
                     slot.getAvailableDate().equals(date) && slot.getAvailableTime().equals(time)
             );
-
 
             if (removed) {
                 schedule.setAvailableSlots(updatedSlots);

@@ -40,6 +40,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/v1/visits/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
                         .requestMatchers("/api/v1/schedule/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
+                        .requestMatchers("/api/v1/availability/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
 
                         .requestMatchers(WHITE_LIST_URL).permitAll()
                         .anyRequest().authenticated()

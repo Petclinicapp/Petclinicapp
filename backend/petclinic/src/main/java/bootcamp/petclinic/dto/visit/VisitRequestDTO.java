@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VisitRequestDTO {
+    private String doctorId;
     private String petId;
     private LocalDateTime visitDateTime;
     private String reason;
