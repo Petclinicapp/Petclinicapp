@@ -4,6 +4,7 @@ import { BiUser } from "react-icons/bi";
 import { useState } from "react";
 import CreatePetForm from "./CreatePetForm";
 import { addPet } from "../services/postService";
+import { Link } from "react-router-dom";
 
 function UserCard() {
   const { user, pets, fetchPets } = useAuth();
@@ -52,6 +53,12 @@ function UserCard() {
         >
           Add Pet
         </button>
+        <Link
+          to={`/visits/${user.id}`}
+          className="cursor-pointer bg-[#FB8500] text-white font-bold px-6 py-2 rounded-lg shadow-lg hover:text-[#FB8500] hover:bg-white transition-all duration-300 ease-in-out"
+        >
+          Appointments
+        </Link>
       </div>
       <div className="bg-white rounded-b-lg md:rounded-none md:rounded-r-lg p-10 w-full md:w-2/3">
         <h4 className="text-[#023047] border-b-1 border-gray-300 mb-4 font-bold">

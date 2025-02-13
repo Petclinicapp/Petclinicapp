@@ -6,6 +6,7 @@ import SignUpPage from "./pages/SignUpPage";
 import { ToastContainer } from "react-toastify";
 import ProfilePage from "./pages/ProfilePage";
 import { useAuth } from "./context/UserContext";
+import VisitPage from "./pages/VisitPage";
 
 function App() {
   const { isLoggedIn } = useAuth();
@@ -23,6 +24,7 @@ function App() {
           element={isLoggedIn ? <Navigate to="/" /> : <SignUpPage />}
         />
         <Route path="/profile/:id" element={<ProfilePage />} />
+        <Route path="/visits/:id" element={<VisitPage />} />
       </Routes>
     </>
   );

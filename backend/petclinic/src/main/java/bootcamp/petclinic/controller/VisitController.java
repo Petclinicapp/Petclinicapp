@@ -1,8 +1,7 @@
 package bootcamp.petclinic.controller;
 
-import bootcamp.petclinic.dto.visit.VisitDetailsUpdateDTO;
-import bootcamp.petclinic.dto.visit.VisitRequestDTO;
-import bootcamp.petclinic.dto.visit.VisitResponseDTO;
+import bootcamp.petclinic.dto.visit.*;
+import bootcamp.petclinic.exceptions.UnauthorizedAccessException;
 import bootcamp.petclinic.exceptions.VisitNotFoundException;
 import bootcamp.petclinic.service.VisitService;
 import jakarta.validation.Valid;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -28,6 +26,16 @@ public class VisitController {
     public ResponseEntity<VisitResponseDTO> createVisit(@RequestBody VisitRequestDTO visitRequestDTO) {
         VisitResponseDTO visit = visitService.createVisit(visitRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(visit);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<VisitResponseDTO>> getAllVisits() {
+        try {
+            List<VisitResponseDTO> response = visitService.getAllUserVisits();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(List.of());
+        }
     }
 
     @GetMapping("/{visitId}")
@@ -68,12 +76,12 @@ public class VisitController {
         try {
             visitService.createVisitDetails(visitId);
             return ResponseEntity.status(HttpStatus.CREATED).body("Visit details created successfully!");
-        } catch (VisitNotFoundException e){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch(
-        RuntimeException e)
-        {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());}
+        } catch (VisitNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (
+                RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PatchMapping("/{visitId}/updateDetails")
@@ -91,6 +99,27 @@ public class VisitController {
         }
     }
 
+    @PatchMapping("/{visitId}/status")
+    public ResponseEntity<VisitUpdateResponseDTO> updateVisitStatus(
+            @PathVariable String visitId,
+            @RequestBody VisitUpdateRequestDTO status
+    ) {
+        try {
+            VisitUpdateResponseDTO response = visitService.updateVisitStatus(visitId, status);
+            return ResponseEntity.ok(response);
 
+        } catch (UnauthorizedAccessException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new VisitUpdateResponseDTO(e.getMessage()));
+
+        } catch (VisitNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new VisitUpdateResponseDTO(e.getMessage()));
+
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new VisitUpdateResponseDTO(e.getMessage()));
+        }
+    }
 
 }

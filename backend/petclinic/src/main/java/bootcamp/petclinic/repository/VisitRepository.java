@@ -38,4 +38,11 @@ public class VisitRepository {
                 .filter(visit -> userId.equals(visit.getUserId()))
                 .collect(Collectors.toList());
     }
+
+    public List<Visit> findAllVisits() {
+        return visitTable.scan()
+                .items()
+                .stream()
+                .collect(Collectors.toList());
+    }
 }
