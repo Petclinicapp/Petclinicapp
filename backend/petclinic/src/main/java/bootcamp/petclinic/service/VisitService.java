@@ -4,6 +4,8 @@ import bootcamp.petclinic.dto.visit.*;
 import bootcamp.petclinic.enums.VisitStatus;
 import bootcamp.petclinic.exceptions.UnauthorizedAccessException;
 import bootcamp.petclinic.exceptions.VisitNotFoundException;
+import bootcamp.petclinic.model.Availability;
+import bootcamp.petclinic.model.DoctorSchedule;
 import bootcamp.petclinic.model.Visit;
 import bootcamp.petclinic.model.VisitDetails;
 import bootcamp.petclinic.repository.VisitDetailsRepository;
@@ -23,11 +25,32 @@ public class VisitService {
     private final VisitRepository visitRepository;
     private final VisitDetailsRepository visitDetailsRepository;
     private final AuthService authService;
+    private final AvailabilityService availabilityService;
+    private final DoctorScheduleService doctorScheduleService;
 
     public VisitResponseDTO createVisit(VisitRequestDTO visitRequestDTO) {
         String userId = authService.getCurrentUser()
                 .orElseThrow(() -> new RuntimeException("User not authenticated"))
                 .getUserId();
+
+        List<DoctorSchedule> schedules = doctorScheduleService.getDoctorSchedule(visitRequestDTO.getDoctorId())
+                .map(List::of)
+                .orElse(List.of());
+
+
+        Optional<Availability> availableSlot = availabilityService.findAndReserveTimeSlot(
+                visitRequestDTO.getDoctorId(),
+                visitRequestDTO.getVisitDateTime().toLocalDate(),
+                visitRequestDTO.getVisitDateTime().toLocalTime(),
+                schedules
+        );
+
+        if (availableSlot.isEmpty()) {
+            throw new RuntimeException("Selected time slot is not available");
+        }
+
+        availabilityService.bookSlot(availableSlot.get());
+        doctorScheduleService.updateSchedule(schedules.get(0));
 
         Visit visit = new Visit();
         visit.setVisitId(UUID.randomUUID().toString());
