@@ -88,3 +88,62 @@ export const pets = [
     weight: 4.2,
   },
 ];
+
+export const availableAppointments = [
+  {
+    doctorId: "1234",
+    availableSlots: [
+      { availableDate: "2025-02-13", availableTime: "08:00", booked: false },
+      { availableDate: "2025-02-13", availableTime: "10:00", booked: false },
+      { availableDate: "2025-02-13", availableTime: "14:00", booked: false },
+    ],
+  },
+  {
+    doctorId: "1234",
+    availableSlots: [
+      { availableDate: "2025-02-14", availableTime: "09:00", booked: false },
+      { availableDate: "2025-02-14", availableTime: "11:00", booked: false },
+      { availableDate: "2025-02-14", availableTime: "15:00", booked: false },
+    ],
+  },
+  {
+    doctorId: "1234",
+    availableSlots: [
+      { availableDate: "2025-02-15", availableTime: "08:30", booked: false },
+      { availableDate: "2025-02-15", availableTime: "12:00", booked: false },
+      { availableDate: "2025-02-15", availableTime: "16:00", booked: false },
+    ],
+  },
+  {
+    doctorId: "1234",
+    availableSlots: [
+      { availableDate: "2025-02-20", availableTime: "09:30", booked: false },
+      { availableDate: "2025-02-20", availableTime: "13:00", booked: false },
+      { availableDate: "2025-02-20", availableTime: "17:00", booked: false },
+    ],
+  },
+  {
+    doctorId: "1234",
+    availableSlots: [
+      { availableDate: "2025-02-23", availableTime: "08:00", booked: false },
+      { availableDate: "2025-02-23", availableTime: "10:30", booked: false },
+      { availableDate: "2025-02-23", availableTime: "14:30", booked: false },
+    ],
+  },
+  {
+    doctorId: "1234",
+    availableSlots: [
+      { availableDate: "2025-02-25", availableTime: "09:00", booked: false },
+      { availableDate: "2025-02-25", availableTime: "11:30", booked: false },
+      { availableDate: "2025-02-25", availableTime: "15:30", booked: false },
+    ],
+  },
+  {
+    doctorId: "1234",
+    availableSlots: [
+      { availableDate: "2025-02-28", availableTime: "07:30", booked: false },
+      { availableDate: "2025-02-28", availableTime: "10:00", booked: false },
+      { availableDate: "2025-02-28", availableTime: "13:30", booked: false },
+    ],
+  },
+];

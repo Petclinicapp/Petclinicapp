@@ -62,3 +62,26 @@ export const addPet = async (data) => {
     );
   }
 };
+
+export const addVisit = async (data) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      throw new Error("User is not authenticated");
+    }
+
+    const response = await axios.post(`${API_URL}/api/v1/visits/add`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      `Failed to add pet: ${error.response?.data?.message || error.message}`
+    );
+  }
+};
