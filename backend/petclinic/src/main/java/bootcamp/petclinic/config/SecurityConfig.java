@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/pets/{petId}").hasAnyRole("USER", "ADMIN", "DOCTOR")
 
                         .requestMatchers("/api/v1/visits/{visitId}/status").hasRole("DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/visits/all").hasAnyRole("DOCTOR", "ADMIN")
                         .requestMatchers("/api/v1/visits/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
 
                         .requestMatchers(WHITE_LIST_URL).permitAll()

@@ -6,8 +6,8 @@ import bootcamp.petclinic.exceptions.UnauthorizedAccessException;
 import bootcamp.petclinic.exceptions.VisitNotFoundException;
 import bootcamp.petclinic.model.Visit;
 import bootcamp.petclinic.model.VisitDetails;
-import bootcamp.petclinic.repository.VisitRepository;
 import bootcamp.petclinic.repository.VisitDetailsRepository;
+import bootcamp.petclinic.repository.VisitRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -72,6 +72,21 @@ public class VisitService {
                         visit.getStatus(),
                         visit.getVisitDetailsId()
                 ));
+    }
+
+    public List<VisitResponseDTO> getAllUserVisits() {
+        List<Visit> visits = visitRepository.findAllVisits();
+
+        return visits.stream()
+                .map(visit -> new VisitResponseDTO(
+                        visit.getVisitId(),
+                        visit.getPetId(),
+                        visit.getUserId(),
+                        visit.getVisitDateTime(),
+                        visit.getReason(),
+                        visit.getStatus(),
+                        visit.getVisitDetailsId()
+                )).collect(Collectors.toList());
     }
 
     public List<VisitResponseDTO> getVisitsByUserId(String userId) {
