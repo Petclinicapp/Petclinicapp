@@ -28,3 +28,33 @@ export const getVisitsByUserId = async (userId) => {
     throw new Error(`Error fetching user data: ${error.message}`);
   }
 };
+
+export const getAllVisits = async (userRole) => {
+  if (userRole !== "ROLE_DOCTOR") {
+    throw new Error("You do not have permission to view this data.");
+  }
+
+  try {
+    const resp = await axios.get(`${API_URL}/api/v1/visits/all`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return resp.data;
+  } catch (error) {
+    throw new Error(`Error fetching visits: ${error.message}`);
+  }
+};
+
+export const getPetById = async (petId) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/v1/pets/${petId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(`Error fetching pet data: ${error.message}`);
+  }
+};

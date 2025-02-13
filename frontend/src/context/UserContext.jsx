@@ -37,63 +37,60 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
-  // Fetch user data when the token changes
   useEffect(() => {
     if (token) {
       try {
         const userData = jwtDecode(token);
-        setUser(userData); // Set the user based on the decoded token
+        setUser(userData);
       } catch (error) {
         console.error("Invalid token", error);
         setUser(null);
       }
     } else {
-      setUser(null); // Clear user if no token
+      setUser(null);
     }
-  }, [token]); // Runs when token changes
+  }, [token]);
 
   useEffect(() => {
-    if (!user || !user.id) return; // Ensure user exists before fetching
+    if (!user || !user.id) return;
 
     const fetchPets = async () => {
       try {
         const data = await getPetsByUserId(user.id);
         setPets(data);
       } catch (err) {
-        setError(err.message);
+        console.log(err.message);
       }
     };
 
     fetchPets();
-  }, [user]); // Fetch pets whenever user changes
+  }, [user]);
 
   useEffect(() => {
-    if (!user || !user.id) return; // Ensure user exists before fetching
+    if (!user || !user.id) return;
 
     const fetchVisits = async () => {
       try {
-        const visitData = await getVisitsByUserId(user.id); // Fetch visits from the backend
-        setVisits(visitData); // Set visits in state
+        const visitData = await getVisitsByUserId(user.id);
+        setVisits(visitData);
       } catch (err) {
         console.error("Error fetching visits:", err.message);
       }
     };
 
     fetchVisits();
-  }, [user, visits]); // Fetch visits whenever user changes
+  }, [user]);
 
   const login = async (userData) => {
-    console.log("Logging in with:", userData);
     try {
       const { token } = await postLogin(userData);
       localStorage.setItem("token", token);
-      setToken(token); // Set token in state
+      setToken(token);
 
       toast.success("Logged in successfully");
-      navigate("/");
-      // window.location.replace("/");
+      // navigate("/");
+      window.location.replace("/");
     } catch (error) {
-      console.error("Login error:", error.message);
       toast.error(error.message);
     }
   };
@@ -135,8 +132,8 @@ export const AuthProvider = ({ children }) => {
 
   const handleDeletePet = async (petId) => {
     try {
-      await deletePet(petId); // Call the API to delete the pet
-      setPets((prevPets) => prevPets.filter((pet) => pet.petId !== petId)); // Remove from the local pets list
+      await deletePet(petId);
+      setPets((prevPets) => prevPets.filter((pet) => pet.petId !== petId));
       toast.success("Pet deleted successfully");
     } catch (error) {
       toast.error("Failed to delete pet");
