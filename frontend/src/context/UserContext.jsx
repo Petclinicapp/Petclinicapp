@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import { logout, postLogin, postRegister } from "../services/postService";
-import { getPetsByUserId } from "../services/getService";
+import { getPetsByUserId, getVisitsByUserId } from "../services/getService";
 import { deletePet } from "../services/deleteService";
 
 const AuthContext = createContext();
@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [pets, setPets] = useState([]);
+  const [visits, setVisits] = useState([]);
   const isLoggedIn = !!token;
   const navigate = useNavigate();
 
@@ -65,6 +66,21 @@ export const AuthProvider = ({ children }) => {
 
     fetchPets();
   }, [user]); // Fetch pets whenever user changes
+
+  useEffect(() => {
+    if (!user || !user.id) return; // Ensure user exists before fetching
+
+    const fetchVisits = async () => {
+      try {
+        const visitData = await getVisitsByUserId(user.id); // Fetch visits from the backend
+        setVisits(visitData); // Set visits in state
+      } catch (err) {
+        console.error("Error fetching visits:", err.message);
+      }
+    };
+
+    fetchVisits();
+  }, [user, visits]); // Fetch visits whenever user changes
 
   const login = async (userData) => {
     console.log("Logging in with:", userData);
@@ -138,6 +154,7 @@ export const AuthProvider = ({ children }) => {
         pets,
         fetchPets,
         handleDeletePet,
+        visits,
       }}
     >
       {children}

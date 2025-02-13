@@ -15,3 +15,16 @@ export const getPetsByUserId = async (userId) => {
     throw new Error(`Error fetching user data: ${error.message}`);
   }
 };
+
+export const getVisitsByUserId = async (userId) => {
+  try {
+    const resp = await axios.get(`${API_URL}/api/v1/visits/user/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return resp.data;
+  } catch (error) {
+    throw new Error(`Error fetching user data: ${error.message}`);
+  }
+};

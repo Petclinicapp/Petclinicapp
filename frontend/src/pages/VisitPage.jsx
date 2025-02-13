@@ -1,14 +1,18 @@
 import AppointmentBooking from "../components/AppointmentBooking";
+import AppointmentsList from "../components/AppointmentsList";
+import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 
 function VisitPage() {
   return (
-    <div className="bg-[#023047] h-screen">
+    <>
       <Navbar />
-      <div className="pt-20">
+      <div className="min-h-screen pt-32 bg-[#023047] flex flex-col">
         <AppointmentBooking />
+        <AppointmentsList />
       </div>
-    </div>
+      <Footer />
+    </>
   );
 }
 export default VisitPage;
