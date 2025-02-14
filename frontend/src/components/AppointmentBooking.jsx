@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../app.css"; // Ensure the styles are loaded
 import { useAuth } from "../context/UserContext";
-import { availableAppointments } from "../data";
 import { addVisit } from "../services/postService";
+import { getAllAvailableTimes } from "../services/getService";
+import { toast } from "react-toastify";
 
 const AppointmentBooking = () => {
   const [appointment, setAppointment] = useState({
@@ -13,7 +14,7 @@ const AppointmentBooking = () => {
     selectedPet: "",
     reason: "",
   });
-
+  const [availableAppointments, setAvailableAppointments] = useState({});
   const { pets } = useAuth();
 
   const formatDate = (date) => {
@@ -23,35 +24,63 @@ const AppointmentBooking = () => {
     return `${yyyy}-${mm}-${dd}`;
   };
 
+  const formatTime = (timeString) => {
+    if (!timeString) return timeString;
+    return timeString.slice(0, 5);
+  };
+
+  useEffect(() => {
+    const fetchTimes = async () => {
+      try {
+        const doctorId = "6772c09e-dc34-418f-965d-65b83467a9fc";
+        const data = await getAllAvailableTimes(doctorId);
+
+        // Group appointments by date
+        const groupedAppointments = data.reduce((acc, appt) => {
+          if (!acc[appt.availableDate]) {
+            acc[appt.availableDate] = [];
+          }
+          acc[appt.availableDate].push({
+            time: appt.availableTime,
+            booked: appt.booked,
+          });
+          return acc;
+        }, {});
+
+        setAvailableAppointments(groupedAppointments);
+      } catch (error) {
+        console.error("Error fetching appointments:", error.message);
+      }
+    };
+
+    fetchTimes();
+  }, [availableAppointments]);
+
   const formattedDate = formatDate(appointment.date);
 
-  const getAvailableDates = () => {
-    const allSlots = availableAppointments.flatMap(
-      (appt) => appt.availableSlots
-    );
-    return new Set(
-      allSlots.filter((slot) => !slot.booked).map((slot) => slot.availableDate)
-    );
-  };
+  const availableDates = new Set(Object.keys(availableAppointments));
 
-  const availableDates = getAvailableDates();
-
-  const getAvailableTimes = (dateStr) => {
-    const doctorAppointments = availableAppointments.find((appt) =>
-      appt.availableSlots.some((slot) => slot.availableDate === dateStr)
-    );
-
-    return doctorAppointments
-      ? doctorAppointments.availableSlots
-          .filter((slot) => slot.availableDate === dateStr && !slot.booked)
-          .map((slot) => slot.availableTime)
-      : [];
-  };
-
-  const availableTimes = getAvailableTimes(formattedDate);
+  const availableTimes = availableAppointments[formattedDate]
+    ? availableAppointments[formattedDate]
+        .filter((slot) => !slot.booked)
+        .map((slot) => slot.time)
+    : [];
 
   const handleDateChange = (newDate) => {
     setAppointment((prev) => ({ ...prev, date: newDate, selectedTime: null }));
+  };
+
+  const isTimeAvailable = (time) => {
+    const now = new Date();
+    const selectedDate = new Date(appointment.date);
+    const [hours, minutes] = time.split(":").map(Number);
+
+    selectedDate.setHours(hours);
+    selectedDate.setMinutes(minutes);
+    selectedDate.setSeconds(0);
+    selectedDate.setMilliseconds(0);
+
+    return selectedDate > now;
   };
 
   const handleTimeSelect = (time) => {
@@ -78,27 +107,23 @@ const AppointmentBooking = () => {
       return;
     }
 
-    const formattedDate = formatDate(appointment.date);
-    const visitDateTime = `${formattedDate}T${appointment.selectedTime}`;
+    const visitDateTime = `${formattedDate}T${formatTime(
+      appointment.selectedTime
+    )}`;
 
-    // Log the data before sending to the backend
+    const doctorId = "6772c09e-dc34-418f-965d-65b83467a9fc";
+
     const appointmentDetails = {
       petId: appointment.selectedPet,
       visitDateTime,
       reason: appointment.reason,
+      doctorId,
     };
-
-    console.log(
-      "Appointment details before sending to the backend:",
-      appointmentDetails
-    );
 
     try {
       const response = await addVisit(appointmentDetails);
-
       if (response) {
-        alert("Appointment successfully booked!");
-        // Reset the form after successful submission
+        toast.success("Appointment successfully booked!");
         setAppointment({
           date: new Date(),
           selectedTime: null,
@@ -113,12 +138,11 @@ const AppointmentBooking = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h1 className="text-xl font-semibold text-center mb-4">
+      <h1 className="text-2xl font-semibold text-center mb-4">
         Book an Appointment
       </h1>
 
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Left Side - Calendar and Time Selection */}
         <div className="md:w-1/2">
           <Calendar
             onChange={handleDateChange}
@@ -126,11 +150,9 @@ const AppointmentBooking = () => {
             locale="en-US"
             minDate={new Date()}
             tileClassName={({ date }) => {
-              const dateStr = formatDate(date);
-              if (availableDates.has(dateStr)) {
-                return "available-day";
-              }
-              return null;
+              return availableDates.has(formatDate(date))
+                ? "available-day"
+                : "";
             }}
           />
           <div className="mt-4">
@@ -145,11 +167,14 @@ const AppointmentBooking = () => {
                     className={`px-4 py-2 rounded transition ${
                       appointment.selectedTime === time
                         ? "bg-green-600 text-white"
-                        : "bg-blue-500 text-white hover:bg-blue-600"
+                        : isTimeAvailable(time)
+                        ? "bg-[#8ECAE6] text-white hover:bg-blue-600"
+                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
                     }`}
                     onClick={() => handleTimeSelect(time)}
+                    disabled={!isTimeAvailable(time)}
                   >
-                    {time}
+                    {formatTime(time)}
                   </button>
                 ))}
               </div>
@@ -161,14 +186,13 @@ const AppointmentBooking = () => {
           </div>
         </div>
 
-        {/* Right Side - Appointment Details */}
         <div className="md:w-1/2 p-4 bg-green-100 border border-green-400 rounded">
           <h2 className="text-lg font-semibold text-green-800">
             Your Appointment
           </h2>
-          <p className="text-gray-700">📅 Date: {formattedDate}</p>
-          <p className="text-gray-700">
-            ⏰ Time: {appointment.selectedTime || "Not selected"}
+          <p className="text-gray-700 font-bold">📅 Date: {formattedDate}</p>
+          <p className="text-gray-700 font-bold">
+            ⏰ Time: {formatTime(appointment.selectedTime) || "Not selected"}
           </p>
 
           <label className="block mt-4 mb-2 text-sm font-semibold text-gray-700">
