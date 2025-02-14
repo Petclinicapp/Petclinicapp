@@ -11,17 +11,25 @@ A veterinary clinic management system built with Spring Boot and React that stre
   - JWT-based authentication
   - Role-based access control (Admin, Doctor, User)
 
+    <img src="./frontend/public/images/github/login.png" alt="Login page" width="300">
+    <img src="./frontend/public/images/github/registration.png" alt="Login page" width="300">
+
 - Pet Management
 
   - Add and update pet information
   - View pet's visit history
   - Track pet medical history
 
+  <img src="./frontend/public/images/github/pets.png" alt="Pets Page" width="300">
+  <img src="./frontend/public/images/github/appointment.png" alt="Appointment Page" width="334">
+
 - Visit Management
 
   - Schedule veterinary appointments
   - Manage visits (Edit/Cancel)
   - Track visit history
+
+  <img src="./frontend/public/images/github/visit.png" alt="Login page" width="300">
 
 ## Technology Stack
 
@@ -62,10 +70,14 @@ A veterinary clinic management system built with Spring Boot and React that stre
 ### Visits
 
 - POST `/api/v1/visits/add` - Schedule new visit
+- GET `/api/v1/visits/all` - Get all visits
 - GET `/api/v1/visits/{visitId}` - Get visit details
 - GET `/api/v1/visits/user/{userId}` - Get user visit details
 - PATCH `/api/v1/visits/{visitId}` - Update visit information
 - DELETE `/api/v1/visits/{visitId}` - Cancel visit
+- POST `/api/v1/visits/{visitId}/details` - Create visit details
+- PATCH `/api/v1/visits/{visitId}/updateDetails` - Update visit details
+- PATCH `/api/v1/visits/{visitId}/status` - Update visit status
 
 ## Getting Started
 
@@ -88,6 +100,11 @@ A veterinary clinic management system built with Spring Boot and React that stre
    - Navigate to frontend: `cd frontend`
    - Install dependencies: `npm i`
    - Start the application: `npm run dev`
+
+## Links
+
+ [🔗 Miro Board](https://miro.com/app/board/uXjVLk2JWUw=/)
+
 
 ## Team
 
