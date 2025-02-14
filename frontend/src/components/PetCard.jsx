@@ -6,10 +6,11 @@ import { updatePet } from "../services/putService";
 import PetForm from "./CreatePetForm";
 import { useAuth } from "../context/UserContext";
 import DeletePetModal from "./DeletePetModal";
+import { Link } from "react-router-dom";
 
 function PetCard({ pet }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const { fetchPets, handleDeletePet } = useAuth();
+  const { fetchPets, handleDeletePet, user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [petToDelete, setPetToDelete] = useState(null);
 
@@ -34,7 +35,7 @@ function PetCard({ pet }) {
   const confirmDelete = async () => {
     if (petToDelete) {
       await handleDeletePet(petToDelete.petId);
-      closeDeleteModal(); // Close the modal after deletion
+      closeDeleteModal();
       fetchPets();
     }
   };
@@ -48,14 +49,12 @@ function PetCard({ pet }) {
       return;
     }
 
-    // Exclude petId from updatedData
     const { petId, ...dataWithoutPetId } = updatedData;
 
-    // Convert age and weight to numbers before sending to the backend
     const updatedPetData = {
       ...dataWithoutPetId,
-      age: Number(dataWithoutPetId.age), // Convert age to a number
-      weight: Number(dataWithoutPetId.weight), // Convert weight to a number
+      age: Number(dataWithoutPetId.age),
+      weight: Number(dataWithoutPetId.weight),
     };
 
     try {
@@ -85,7 +84,7 @@ function PetCard({ pet }) {
       </div>
       <div className="flex px-4 pb-10 gap-10">
         <div className="flex items-center">
-          <div className="text-[#FB8500] p-6 rounded-full border-2 border-[#FB8500]">
+          <div className="text-[#FB8500] bg-[#023047] p-6 rounded-full border-2 border-[#FB8500]">
             <IoPawOutline size={40} />
           </div>
         </div>
@@ -112,9 +111,12 @@ function PetCard({ pet }) {
         </div>
       </div>
 
-      <button className="bg-[#FB8500] text-white font-bold rounded-b-lg border-t-2 w-full py-4 cursor-pointer hover:text-[#FB8500] hover:bg-white hover:border-t-2 border-[#FB8500] transition-all duration-300 ease-in-out">
+      <Link
+        to={`/visits/${user.id}`}
+        className="flex justify-center bg-[#FB8500] text-white font-bold rounded-b-lg border-t-2 w-full py-4 cursor-pointer hover:text-[#FB8500] hover:bg-white hover:border-t-2 border-[#FB8500] transition-all duration-300 ease-in-out"
+      >
         Make an Appointment
-      </button>
+      </Link>
 
       {isFormOpen && (
         <PetForm
@@ -124,7 +126,6 @@ function PetCard({ pet }) {
         />
       )}
 
-      {/* Delete Modal */}
       <DeletePetModal
         isOpen={isModalOpen}
         onClose={closeDeleteModal}

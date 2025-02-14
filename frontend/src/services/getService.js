@@ -58,3 +58,22 @@ export const getPetById = async (petId) => {
     throw new Error(`Error fetching pet data: ${error.message}`);
   }
 };
+
+export const getAllAvailableTimes = async (doctorId) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/v1/availability/all`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        doctorId: doctorId, // Add the required parameter
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error Status:", error.response?.status);
+    console.error("Error Data:", error.response?.data);
+    throw new Error(`Error fetching available times: ${error.message}`);
+  }
+};

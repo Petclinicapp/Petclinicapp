@@ -52,7 +52,7 @@ function VisitCard({
                 </p>
               </>
             ) : (
-              <p>Pet no longer exists in the system.</p> // Show a message if pet doesn't exist
+              <p>Pet no longer exists in the system.</p>
             )
           ) : (
             <p>Loading pet details...</p>
