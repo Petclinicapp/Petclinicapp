@@ -155,7 +155,7 @@ class DoctorScheduleServiceTest {
     void removeSlot_WhenSlotDoesNotExist_ShouldReturnFalse() {
 
         LocalDate date = LocalDate.of(2025, 2, 13);
-        LocalTime time = LocalTime.of(9, 0); // Nėra slot'o šiam laikui.
+        LocalTime time = LocalTime.of(9, 0); 
         Availability slot = new Availability(doctorId, date, LocalTime.of(10, 0), false);
         DoctorSchedule schedule = new DoctorSchedule();
         schedule.setDoctorId(doctorId);
