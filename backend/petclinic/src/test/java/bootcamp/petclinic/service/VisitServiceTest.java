@@ -98,7 +98,7 @@ class VisitServiceTest {
     @Test
     @DisplayName("createVisit_WhenUserAuthenticated_ShouldCreateSuccessfully")
     void createVisit_WhenUserAuthenticated_ShouldCreateSuccessfully() {
-        // Teigiamas scenarijus: autentiškas vartotojas, gydytojo tvarkaraštis ir laisva laiko eilutė yra rasti.
+    
         when(authService.getCurrentUser()).thenReturn(Optional.of(testUser));
         doNothing().when(visitRepository).save(any(Visit.class));
 
