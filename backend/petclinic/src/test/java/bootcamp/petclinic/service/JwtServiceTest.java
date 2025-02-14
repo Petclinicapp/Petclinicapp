@@ -21,8 +21,8 @@ class JwtServiceTest {
     private JwtService jwtService;
 
     private final String secretKey = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXoxMjM0NTY=";
-    private final long jwtExpiration = 3600000L;      // 1 valanda
-    private final long refreshExpiration = 7200000L;  // 2 valandos
+    private final long jwtExpiration = 3600000L;      
+    private final long refreshExpiration = 7200000L;  
 
     @BeforeEach
     void setUp() {
@@ -39,7 +39,7 @@ class JwtServiceTest {
         user.setUserId("user-123");
         user.setUsername("testuser");
         user.setEmail("test@example.com");
-        user.setRole(Roles.ROLE_USER); // naudojame Roles enum
+        user.setRole(Roles.ROLE_USER); 
         user.setFirstname("Test");
         user.setLastname("User");
 
